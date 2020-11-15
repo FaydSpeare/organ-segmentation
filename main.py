@@ -35,7 +35,7 @@ def segment(data):
 DATA_FOLDER = '/home/fayd/Data/CHAOS_Converted_Train_Sets/'
 
 def main():
-    block = tf_utils.CDFNet(num_filters=64, num_classes=3)
+    block = CDFNet(num_filters=64, num_classes=3)
     '''
     data = nib.load(DATA_FOLDER + 'CT/1/4_.nii').get_data().astype(np.float32) / 1000.
     data = np.moveaxis(data, -1, 0)
