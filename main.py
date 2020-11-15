@@ -48,8 +48,8 @@ def main():
     label = tf.expand_dims(label, axis=-1)
     '''
 
-    data = np.zeros((16, 16, 16, 1))
-    label = np.zeros((16, 16, 16, 3))
+    data = np.zeros((16, 16, 16, 1)).astype(np.float32)
+    label = np.zeros((16, 16, 16, 3)).astype(np.float32)
 
     segment(data)
 
