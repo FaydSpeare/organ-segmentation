@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-import tf_utils
+from tf_utils import CDFNet, ViewAggregationBlock
 
 
 
@@ -10,9 +10,9 @@ def segment(data):
     data_coronal = np.swapaxes(data, 0, 1)
     data_sagittal = np.swapaxes(data, 0, 2)
 
-    axial = tf_utils.CDFNet(num_filters=64, num_classes=2)
-    coronal = tf_utils.CDFNet(num_filters=64, num_classes=2)
-    sagittal = tf_utils.CDFNet(num_filters=64, num_classes=2)
+    axial = CDFNet(num_filters=64, num_classes=2)
+    coronal = CDFNet(num_filters=64, num_classes=2)
+    sagittal = CDFNet(num_filters=64, num_classes=2)
 
     output_axial = axial(data_axial)
     output_coronal = coronal(data_coronal)
@@ -24,7 +24,7 @@ def segment(data):
     output = np.concatenate([output_axial, output_coronal, output_sagittal], axis=-1)
     output = tf.expand_dims(output, axis=0)
 
-    vab = tf_utils.ViewAggregationBlock(num_filters=30, num_classes=2)
+    vab = ViewAggregationBlock(num_filters=30, num_classes=2)
     output = vab.call(output)
 
     print(output.shape)
