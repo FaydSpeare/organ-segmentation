@@ -4,6 +4,7 @@ from tf_utils import CDFNet, ViewAggregationBlock
 
 
 
+
 def segment(data):
 
     data_axial = data
@@ -14,9 +15,13 @@ def segment(data):
     coronal = CDFNet(num_filters=64, num_classes=2)
     sagittal = CDFNet(num_filters=64, num_classes=2)
 
-    output_axial = axial(data_axial)
-    output_coronal = coronal(data_coronal)
-    output_sagittal = sagittal(data_sagittal)
+    output_axial = axial(data_axial).numpy()
+    output_coronal = coronal(data_coronal).numpy()
+    output_sagittal = sagittal(data_sagittal).numpy()
+
+    print('Axial:', output_axial.shape)
+    print('Coronal:', output_coronal.shape)
+    print('Sagittal:', output_sagittal.shape)
 
     output_coronal = np.swapaxes(output_coronal, 0, 1)
     output_sagittal = np.swapaxes(output_sagittal, 0, 2)
@@ -35,7 +40,7 @@ def segment(data):
 DATA_FOLDER = '/home/fayd/Data/CHAOS_Converted_Train_Sets/'
 
 def main():
-    block = CDFNet(num_filters=64, num_classes=3)
+
     '''
     data = nib.load(DATA_FOLDER + 'CT/1/4_.nii').get_data().astype(np.float32) / 1000.
     data = np.moveaxis(data, -1, 0)
@@ -59,4 +64,5 @@ def main():
 
 
 if __name__ == '__main__':
+    print(tf.__version__)
     main()
