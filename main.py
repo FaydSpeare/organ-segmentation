@@ -1,9 +1,7 @@
-import nibabel as nib
 import tensorflow as tf
 import numpy as np
+import tf_utils
 
-from tf_utils.nets.cdfnet import CDFNet
-from tf_utils.blocks.view_aggregation_block import ViewAggregationBlock
 
 
 def segment(data):
@@ -12,13 +10,13 @@ def segment(data):
     data_coronal = np.swapaxes(data, 0, 1)
     data_sagittal = np.swapaxes(data, 0, 2)
 
-    axial = CDFNet(num_filters=64, num_classes=2)
-    coronal = CDFNet(num_filters=64, num_classes=2)
-    sagittal = CDFNet(num_filters=64, num_classes=2)
+    axial = tf_utils.CDFNet(num_filters=64, num_classes=2)
+    coronal = tf_utils.CDFNet(num_filters=64, num_classes=2)
+    sagittal = tf_utils.CDFNet(num_filters=64, num_classes=2)
 
     output_axial = axial(data_axial)
-    output_coronal = axial(data_coronal)
-    output_sagittal = axial(data_sagittal)
+    output_coronal = coronal(data_coronal)
+    output_sagittal = sagittal(data_sagittal)
 
     output_coronal = np.swapaxes(output_coronal, 0, 1)
     output_sagittal = np.swapaxes(output_sagittal, 0, 2)
@@ -26,7 +24,7 @@ def segment(data):
     output = np.concatenate([output_axial, output_coronal, output_sagittal], axis=-1)
     output = tf.expand_dims(output, axis=0)
 
-    vab = ViewAggregationBlock(num_filters=30, num_classes=2)
+    vab = tf_utils.ViewAggregationBlock(num_filters=30, num_classes=2)
     output = vab.call(output)
 
     print(output.shape)
@@ -37,7 +35,7 @@ def segment(data):
 DATA_FOLDER = '/home/fayd/Data/CHAOS_Converted_Train_Sets/'
 
 def main():
-    block = CDFNet(num_filters=64, num_classes=3)
+    block = tf_utils.CDFNet(num_filters=64, num_classes=3)
     '''
     data = nib.load(DATA_FOLDER + 'CT/1/4_.nii').get_data().astype(np.float32) / 1000.
     data = np.moveaxis(data, -1, 0)
@@ -55,9 +53,9 @@ def main():
 
     segment(data)
 
-    output = block.call(data)
-    error = tf.keras.losses.mse(label, output)
-    print(error)
+    #output = block.call(data)
+    #error = tf.keras.losses.mse(label, output)
+    #print(error)
 
 
 if __name__ == '__main__':
