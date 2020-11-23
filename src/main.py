@@ -32,7 +32,7 @@ def main():
     data = np.moveaxis(data, -1, 0)
     data = tf.expand_dims(data, axis=-1)
 
-    label = nib.load(DATA_FOLDER + 'ground.nii').get_data().astype(np.float32) / 255.
+    label = nib.load(DATA_FOLDER + 'ground.nii').get_fdata().astype(np.float32) / 255.
     label = np.moveaxis(label, -1, 0)
     label = tf.expand_dims(label, axis=-1)
 
