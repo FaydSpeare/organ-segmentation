@@ -15,7 +15,7 @@ def segment(data, labels):
     #    outputs.append(axial(i))
     #outputs = tf.concat(outputs, axis=0)
 
-    axial.fit(x=data, y=labels, batch_size=1, epochs=10)
+    axial.fit(x=data, y=labels, batch_size=1, epochs=1)
     preds = axial.predict(data)
 
     # Save image 3D array as nii
