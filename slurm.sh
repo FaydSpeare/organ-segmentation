@@ -17,4 +17,4 @@ source activate /opt/ohpc/pub/apps/tensorflow_2.0.0
 python3.7 -m pip install --user scikit-image
 python3.7 -m pip install --user nibabel
 
-srun -n 1 python3 main.py
+srun -n 1 python3 src/main.py
