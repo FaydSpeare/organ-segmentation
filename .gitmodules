@@ -1,3 +1,0 @@
-[submodule "src/tf_utils"]
-	path = src/tf_utils
-	url = https://github.com/fracogno/tf_utils.git
