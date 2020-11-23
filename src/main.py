@@ -20,15 +20,14 @@ def segment(data):
 
 
 
-#DATA_FOLDER = '/home/fayd/Data/CHAOS_Converted_Train_Sets/CT/1/'
-DATA_FOLDER = '/scratch/itee/uqfspear/organ-segmentation/'
+DATA_FOLDER = '/home/fayd/Data/CHAOS_Converted_Train_Sets/CT/1/'
+#DATA_FOLDER = '/scratch/itee/uqfspear/organ-segmentation/'
 
 def main():
 
 
-    data = nib.load(DATA_FOLDER + '4_.nii').get_data().astype(np.float32) / 1000.
+    data = nib.load(DATA_FOLDER + '4_.nii').get_fdata().astype(np.float32) / 1000.
     data = np.moveaxis(data, -1, 0)
-    data = tf.expand_dims(data, axis=0)
     data = tf.expand_dims(data, axis=-1)
 
     #label = nib.load(DATA_FOLDER + 'CT/1/ground.nii').get_data().astype(np.float32) / 255.
