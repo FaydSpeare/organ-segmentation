@@ -4,7 +4,7 @@ from tensorflow.keras.layers import MaxPool2D, Conv2DTranspose, Conv2D, Softmax
 from tf_utils.blocks.competitive_unpool_block import CompUnpoolBlock
 from tf_utils.blocks.competitive_dense_block import CompDenseBlock
 
-class CDFNet(tf.keras.layers.Layer):
+class CDFNet(tf.keras.models.Model):
 
     def __init__(self, num_filters=64, num_classes=44):
         super(CDFNet, self).__init__()

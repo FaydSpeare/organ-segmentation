@@ -16,6 +16,8 @@ def segment(data):
     outputs = tf.concat(outputs, axis=0)
     print(outputs.shape)
 
+    axial.fit()
+
 
 
 
