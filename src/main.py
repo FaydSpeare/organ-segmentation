@@ -2,7 +2,6 @@ import tensorflow as tf
 import numpy as np
 from tf_utils import CDFNet
 import nibabel as nib
-import matplotlib.pyplot as plt
 
 
 def segment(data, labels):
@@ -41,14 +40,8 @@ def main():
 
     label = nib.load(DATA_FOLDER + 'ground.nii').get_fdata().astype(np.float32) / 255.
     label = np.moveaxis(label, -1, 0)
-
-    plt.imshow(label[20])
-    plt.show()
-
     label = tf.expand_dims(label, axis=-1)
 
-    plt.imshow(label.numpy()[20])
-    plt.show()
 
     segment(data, label)
 
