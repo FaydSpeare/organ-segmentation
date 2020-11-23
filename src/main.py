@@ -8,7 +8,7 @@ def segment(data, labels):
 
     #tf_data = tf.data.Dataset.from_tensor_slices(data)
     axial = CDFNet(num_filters=64, num_classes=2)
-    axial.compile(optimizer='adam', loss='mse')
+    axial.compile(optimizer='adam', loss='categorical_crossentropy')
 
     #outputs = list()
     #for i in tf_data.batch(1):
@@ -16,6 +16,11 @@ def segment(data, labels):
     #outputs = tf.concat(outputs, axis=0)
 
     axial.fit(x=data, y=labels, batch_size=1, epochs=10)
+    preds = axial.predict(data)
+
+    # Save image 3D array as nii
+    nii_label = nib.Nifti1Image(preds, affine=np.eye(4))
+    nii_label.to_filename(DATA_FOLDER + '/preds.nii')
 
 
 
