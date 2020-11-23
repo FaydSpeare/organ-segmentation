@@ -8,7 +8,7 @@ def segment(data, labels):
 
     #tf_data = tf.data.Dataset.from_tensor_slices(data)
     axial = CDFNet(num_filters=64, num_classes=2)
-    axial.compile(optimizer='adam', loss='categorical_crossentropy')
+    axial.compile(optimizer='adam', loss='binary_crossentropy')
 
     #outputs = list()
     #for i in tf_data.batch(1):
