@@ -1,5 +1,6 @@
 import nibabel as nib
 import numpy as np
+import math
 
 DATA_FOLDER = "/home/fayd/Data/CHAOS/1/"
 
@@ -12,7 +13,8 @@ def main():
     labels = np.eye(labels.shape[-1])[labels.argmax(axis=-1)]
 
     # Multiply out and sum
-    labels *= [0, 63, 126, 179, 242, 0]
+    num_classes = labels.shape[-1]
+    labels *= [i * math.floor(255. / num_classes) for i in range(num_classes)]
     labels = np.sum(labels, axis=-1)
 
     nii_label = nib.Nifti1Image(labels, affine=np.eye(4))
