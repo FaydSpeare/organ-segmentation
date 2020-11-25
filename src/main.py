@@ -45,6 +45,7 @@ def load_data(folders, type='InPhase'):
 
         a = nib.load(DATA_FOLDER + f'/{folder}/{type}.nii').get_fdata().astype(np.float32) / 1000.
         a = np.moveaxis(a, -1, 0)
+        print(a.shape)
         if len(a.shape) < 4: a = tf.expand_dims(a, axis=-1)
         x.append(a)
 
@@ -58,7 +59,7 @@ def load_data(folders, type='InPhase'):
 
 if __name__ == '__main__':
     print(tf.__version__)
-    train_data = load_data(['2', '3'])
-    val_data = load_data(['8'])
+    train_data = load_data(['2'])
+    val_data = load_data(['3'])
     model = segment(train_data, val_data)
     predict(model, val_data[0])
