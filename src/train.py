@@ -16,7 +16,7 @@ def train():
     tfrm = TFRecordsManager()
 
     dataset = tfrm.load_datasets_without_batching(tfrecords_path)['train']
-    dataset = dataset.padded_batch(20, padded_shapes={'X' : (304, 304, 2), 'Y' : (304, 304)})
+    dataset = dataset.padded_batch(5, padded_shapes={'X' : (304, 304, 2), 'Y' : (304, 304)})
     dataset = dataset.map(lambda x: (x['X'], x['Y']))
 
 
@@ -25,11 +25,10 @@ def train():
 
     # Callbacks
     tensorboard_callback = TensorBoard(log_dir="./logs")
-    early_stopping_callback = EarlyStopping(restore_best_weights=True, patience=5)
+    # early_stopping_callback = EarlyStopping(restore_best_weights=True, patience=5)
 
     # Train
-    axial_model.fit(dataset, epochs=100,
-                    callbacks=[tensorboard_callback, early_stopping_callback])
+    axial_model.fit(dataset, epochs=100, callbacks=[tensorboard_callback])
 
     # Save model
     axial_model.save(DATA_FOLDER + '/model')
