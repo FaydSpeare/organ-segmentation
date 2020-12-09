@@ -16,7 +16,7 @@ def train():
     tfrm = TFRecordsManager()
 
     dataset = tfrm.load_datasets_without_batching(tfrecords_path)['train']
-    dataset = dataset.padded_batch(1, padded_shapes={'X' : (304, 304, 2), 'Y' : (304, 304)})
+    dataset = dataset.padded_batch(5, padded_shapes={'X' : (304, 304, 2), 'Y' : (304, 304)})
     dataset = dataset.map(lambda x: (x['X'], x['Y']))
 
 
