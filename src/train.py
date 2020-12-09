@@ -67,7 +67,7 @@ def predict(model, data):
     nii_label.to_filename(base_path + '/fixed_preds.nii')
 
     nii_label = nib.Nifti1Image(output, affine=np.eye(4))
-    nii_label.to_filename(base_path + '/fixed_preds.nii')
+    nii_label.to_filename(base_path + '/preds.nii')
 
 
 def load_data(folders, type='Combined'):
