@@ -47,6 +47,44 @@ def main():
         tfrm.save_record(f'{TFRECORD_PATH}/{data_purpose}/{folder}', sample)
 
 
+def main_patches():
+
+    tfrm = TFRecordsManager()
+
+    misc.save_json(TFRECORD_PATH + 'params.json', {
+        'data_purposes': ['train', 'val'],
+        'data_keys': {
+            'X': 'float32',
+            'Y': 'float32'
+        }
+    })
+
+    for data_purpose in ['train', 'val']:
+        if not os.path.isdir(TFRECORD_PATH + data_purpose):
+            os.mkdir(TFRECORD_PATH + data_purpose)
+
+    total_samples = len(os.listdir(DATA_FOLDER))
+    split = math.floor(0.8 * total_samples)
+
+    for idx, folder in enumerate(os.listdir(DATA_FOLDER)):
+        print(f'Creating TFRecord for folder: [{folder}]')
+
+        data_purpose = 'train' if idx <= split else 'val'
+
+        data_path = f'{DATA_FOLDER}/{folder}/Combined.nii'
+        label_path = f'{DATA_FOLDER}/{folder}/ground.nii'
+
+        sample_data = nib.load(data_path).get_fdata().astype(np.float32)
+        sample_label = nib.load(label_path).get_fdata().astype(np.float32) / 63.0
+
+        # Rearrange data
+        sample_data = np.moveaxis(sample_data, 2, 0)
+        sample_label = np.moveaxis(sample_label, 2, 0)
+
+        sample = [{'X': sample_data[i], 'Y': sample_label[i]} for i in range(len(sample_data))]
+        tfrm.save_record(f'{TFRECORD_PATH}/{data_purpose}/{folder}', sample)
+
+
 def test():
 
     tfrm = TFRecordsManager()
