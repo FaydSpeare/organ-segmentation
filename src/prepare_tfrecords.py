@@ -2,6 +2,7 @@ import os
 import nibabel as nib
 import numpy as np
 import math
+import random
 
 from tf_utils.tfrecords import TFRecordsManager
 from tf_utils import misc
@@ -49,9 +50,11 @@ def main():
 
 def main_patches():
 
+    path = '/home/fayd/Fayd/Projects/organ-segmentation/tfrecords-patches/'
+
     tfrm = TFRecordsManager()
 
-    misc.save_json(TFRECORD_PATH + 'params.json', {
+    misc.save_json(path + 'params.json', {
         'data_purposes': ['train', 'val'],
         'data_keys': {
             'X': 'float32',
@@ -60,8 +63,8 @@ def main_patches():
     })
 
     for data_purpose in ['train', 'val']:
-        if not os.path.isdir(TFRECORD_PATH + data_purpose):
-            os.mkdir(TFRECORD_PATH + data_purpose)
+        if not os.path.isdir(path + data_purpose):
+            os.mkdir(path + data_purpose)
 
     total_samples = len(os.listdir(DATA_FOLDER))
     split = math.floor(0.8 * total_samples)
@@ -81,8 +84,24 @@ def main_patches():
         sample_data = np.moveaxis(sample_data, 2, 0)
         sample_label = np.moveaxis(sample_label, 2, 0)
 
-        sample = [{'X': sample_data[i], 'Y': sample_label[i]} for i in range(len(sample_data))]
-        tfrm.save_record(f'{TFRECORD_PATH}/{data_purpose}/{folder}', sample)
+        sample = []
+
+        for i in range(len(sample_data)):
+
+            for _ in range(10):
+
+                start_i = random.randint(0, sample_data.shape[1] - 100)
+                start_j = random.randint(0, sample_data.shape[2] - 100)
+
+                patch_data = sample_data[:, start_i:start_i+100, start_j:start_j+100, :]
+                patch_label = sample_label[:, start_i:start_i+100, start_j:start_j+100]
+
+                sample.append({
+                    'X' : patch_data,
+                    'Y' : patch_label
+                })
+
+        tfrm.save_record(f'{path}/{data_purpose}/{folder}', sample)
 
 
 def test():
@@ -99,8 +118,9 @@ def test():
 
 
 if __name__ == '__main__':
-    main()
-    test()
+    main_patches()
+    #main()
+    #test()
 
 
 '''

@@ -29,12 +29,13 @@ def train():
     val_dataset = val_dataset.map(lambda x: (x['X'], x['Y']))
 
     # Create model
-    model = CDFNet(num_filters=64, num_classes=6)
+    model = CDFNet(num_filters=64, num_classes=5)
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
 
     # Fit model
     tensorboard_callback = TensorBoard(log_dir="./logs")
-    model.fit(train_dataset, epochs=15, callbacks=[tensorboard_callback], validation_data=val_dataset)
+    early_stopping_callback = EarlyStopping(restore_best_weights=True, patience=3)
+    model.fit(train_dataset, epochs=15, callbacks=[tensorboard_callback, early_stopping_callback], validation_data=val_dataset)
 
     # Save model
     model.save(base_path + '/model')
@@ -48,9 +49,9 @@ def predict(model, data):
 
     base_path = misc.get_base_path(training=False)
 
-    labels = model.predict(data)
+    output = model.predict(data)
 
-    labels = np.swapaxes(labels, 0, 2)
+    labels = np.swapaxes(output, 0, 2)
     labels = np.swapaxes(labels, 0, 1)
 
     # Collapse the probabilities into a one hot encoding
@@ -63,6 +64,9 @@ def predict(model, data):
 
     # Save image 3D array as nii
     nii_label = nib.Nifti1Image(labels, affine=np.eye(4))
+    nii_label.to_filename(base_path + '/fixed_preds.nii')
+
+    nii_label = nib.Nifti1Image(output, affine=np.eye(4))
     nii_label.to_filename(base_path + '/fixed_preds.nii')
 
 
