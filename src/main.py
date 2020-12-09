@@ -5,8 +5,8 @@ from tf_utils import CDFNet
 import nibabel as nib
 
 #DATA_FOLDER = '/home/fayd/Data/CHAOS_Converted_Train_Sets/CT/1/'
-#DATA_FOLDER = '/home/fayd/Data/CHAOS'
-DATA_FOLDER = '/scratch/itee/uqfspear/organ-segmentation'
+DATA_FOLDER = '/home/fayd/Data/CHAOS'
+#DATA_FOLDER = '/scratch/itee/uqfspear/organ-segmentation'
 
 def segment(train, val):
 
