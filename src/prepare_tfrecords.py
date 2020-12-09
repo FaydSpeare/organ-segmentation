@@ -40,6 +40,7 @@ def main():
         sample_data = nib.load(data_path).get_fdata().astype(np.float32)
         sample_label = nib.load(label_path).get_fdata().astype(np.float32) / 63.0
 
+
         # Rearrange data
         sample_data = np.moveaxis(sample_data, 2, 0)
         sample_label = np.moveaxis(sample_label, 2, 0)
@@ -83,6 +84,13 @@ def main_patches():
         # Rearrange data
         sample_data = np.moveaxis(sample_data, 2, 0)
         sample_label = np.moveaxis(sample_label, 2, 0)
+
+        print(np.sum(np.count_nonzero(sample_label == 0., axis=-1)) / (288 * 288 * 30))
+        print(np.sum(np.count_nonzero(sample_label == 1., axis=-1)) / (288 * 288 * 30))
+        print(np.sum(np.count_nonzero(sample_label == 2., axis=-1)) / (288 * 288 * 30))
+        print(np.sum(np.count_nonzero(sample_label == 3., axis=-1)) / (288 * 288 * 30))
+        print(np.sum(np.count_nonzero(sample_label == 4., axis=-1)) / (288 * 288 * 30))
+        print()
 
         sample = []
 

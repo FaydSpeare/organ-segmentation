@@ -12,13 +12,13 @@ from tf_utils import CDFNet
 def train():
 
     base_path = misc.get_base_path(training=False)
-    tfrecords_path = base_path + 'tfrecords-patches/'
+    tfrecords_path = base_path + 'tfrecords/'
 
     # Load TFRecords
     tfrm = TFRecordsManager()
     dataset = tfrm.load_datasets_without_batching(tfrecords_path)
 
-    padding_shapes = {'X' : (112, 112, 2), 'Y' : (112, 112)}
+    padding_shapes = {'X' : (304, 304, 2), 'Y' : (304, 304)}
 
     # Prep training data
     train_dataset = dataset['train']
@@ -37,7 +37,8 @@ def train():
     # Fit model
     tensorboard_callback = TensorBoard(log_dir="./logs")
     early_stopping_callback = EarlyStopping(restore_best_weights=True, patience=3)
-    model.fit(train_dataset, epochs=25, callbacks=[tensorboard_callback, early_stopping_callback], validation_data=val_dataset)
+    model.fit(train_dataset, epochs=25, callbacks=[tensorboard_callback, early_stopping_callback],
+              validation_data=val_dataset, class_weight={0: 270, 1: 11, 2: 1, 3:1, 4:1})
 
     # Save model
     model.save(base_path + '/model')
