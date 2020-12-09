@@ -34,7 +34,7 @@ def train():
 
     # Fit model
     tensorboard_callback = TensorBoard(log_dir="./logs")
-    model.fit(train_dataset, epochs=20, callbacks=[tensorboard_callback], validation_data=val_dataset)
+    model.fit(train_dataset, epochs=15, callbacks=[tensorboard_callback], validation_data=val_dataset)
 
     # Save model
     model.save(base_path + '/model')
