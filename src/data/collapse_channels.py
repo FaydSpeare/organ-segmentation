@@ -21,4 +21,4 @@ def main():
     nii_label.to_filename(DATA_FOLDER + '/fixed_preds.nii')
 
 if __name__ == '__main__':
-    #main()
+    main()

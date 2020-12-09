@@ -37,8 +37,8 @@ def train():
     # Fit model
     tensorboard_callback = TensorBoard(log_dir="./logs")
     early_stopping_callback = EarlyStopping(restore_best_weights=True, patience=3)
-    model.fit(train_dataset, epochs=25, callbacks=[tensorboard_callback, early_stopping_callback],
-              validation_data=val_dataset, class_weight={0: 270, 1: 11, 2: 1, 3:1, 4:1})
+    model.fit(train_dataset, epochs=100, callbacks=[tensorboard_callback],
+              validation_data=val_dataset, class_weight={0: 270., 1: 11., 2: 1., 3:1., 4:1.})
 
     # Save model
     model.save(base_path + '/model')
