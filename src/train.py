@@ -18,7 +18,7 @@ def train():
     tfrm = TFRecordsManager()
     dataset = tfrm.load_datasets_without_batching(tfrecords_path)
 
-    padding_shapes = {'X' : (104, 104, 2), 'Y' : (104, 104)}
+    padding_shapes = {'X' : (112, 112, 2), 'Y' : (112, 112)}
 
     # Prep training data
     train_dataset = dataset['train']
