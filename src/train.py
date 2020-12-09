@@ -16,22 +16,35 @@ def train():
     tfrm = TFRecordsManager()
 
     dataset = tfrm.load_datasets_without_batching(tfrecords_path)['train']
-    dataset = dataset.padded_batch(5, padded_shapes={'X' : (304, 304, 2), 'Y' : (304, 304)})
+    dataset = dataset.padded_batch(1, padded_shapes={'X' : (304, 304, 2), 'Y' : (304, 304)})
     dataset = dataset.map(lambda x: (x['X'], x['Y']))
 
 
-    axial_model = CDFNet(num_filters=64, num_classes=6)
-    axial_model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
+    model = CDFNet(num_filters=64, num_classes=6)
+    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
 
-    # Callbacks
+    '''
+    loss_fn = tf.keras.losses.SparseCategoricalCrossentropy()
+
+    optimizer = tf.keras.optimizers.Adam()
+
+    for batch in dataset: # (batch, X, Y)
+
+        with tf.GradientTape() as tape:
+            logits = model(batch[0])
+            loss = loss_fn(batch[1], logits)
+
+        gradients = tape.gradient(loss, model.trainable_variables)
+        optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+    '''
+
+
+
+
     tensorboard_callback = TensorBoard(log_dir="./logs")
-    # early_stopping_callback = EarlyStopping(restore_best_weights=True, patience=5)
+    model.fit(dataset, epochs=100, callbacks=[tensorboard_callback])
 
-    # Train
-    axial_model.fit(dataset, epochs=100, callbacks=[tensorboard_callback])
-
-    # Save model
-    axial_model.save(DATA_FOLDER + '/model')
+    #axial_model.save(DATA_FOLDER + '/model')
 
 
 

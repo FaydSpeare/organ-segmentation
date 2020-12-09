@@ -30,7 +30,7 @@ def main():
         label_path = f'{DATA_FOLDER}/{folder}/ground.nii'
 
         sample_data = nib.load(data_path).get_fdata().astype(np.float32)
-        sample_label = nib.load(label_path).get_fdata().astype(np.float32)
+        sample_label = nib.load(label_path).get_fdata().astype(np.float32) / 63.0
 
         # Rearrange data
         sample_data = np.moveaxis(sample_data, 2, 0)
