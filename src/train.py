@@ -12,20 +12,22 @@ from tf_utils import CDFNet
 def train():
 
     base_path = misc.get_base_path(training=False)
-    tfrecords_path = base_path + 'tfrecords/'
+    tfrecords_path = base_path + 'tfrecords-patches/'
 
     # Load TFRecords
     tfrm = TFRecordsManager()
     dataset = tfrm.load_datasets_without_batching(tfrecords_path)
 
+    padding_shapes = {'X' : (104, 104, 2), 'Y' : (104, 104)}
+
     # Prep training data
     train_dataset = dataset['train']
-    train_dataset = train_dataset.padded_batch(5, padded_shapes={'X' : (304, 304, 2), 'Y' : (304, 304)})
+    train_dataset = train_dataset.padded_batch(5, padded_shapes=padding_shapes)
     train_dataset = train_dataset.map(lambda x: (x['X'], x['Y']))
 
     # Prep validation data
     val_dataset = dataset['val']
-    val_dataset = val_dataset.padded_batch(5, padded_shapes={'X' : (304, 304, 2), 'Y' : (304, 304)})
+    val_dataset = val_dataset.padded_batch(5, padded_shapes=padding_shapes)
     val_dataset = val_dataset.map(lambda x: (x['X'], x['Y']))
 
     # Create model
@@ -35,7 +37,7 @@ def train():
     # Fit model
     tensorboard_callback = TensorBoard(log_dir="./logs")
     early_stopping_callback = EarlyStopping(restore_best_weights=True, patience=3)
-    model.fit(train_dataset, epochs=15, callbacks=[tensorboard_callback, early_stopping_callback], validation_data=val_dataset)
+    model.fit(train_dataset, epochs=25, callbacks=[tensorboard_callback, early_stopping_callback], validation_data=val_dataset)
 
     # Save model
     model.save(base_path + '/model')

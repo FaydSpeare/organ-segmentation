@@ -2,7 +2,7 @@ import nibabel as nib
 import numpy as np
 import math
 
-DATA_FOLDER = "/home/fayd/Data/CHAOS/1/"
+DATA_FOLDER = "/home/fayd/Data/CHAOS/2/"
 
 def main():
     labels = nib.load(DATA_FOLDER + 'preds.nii').get_fdata().astype(np.float32)

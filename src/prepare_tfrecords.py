@@ -93,8 +93,8 @@ def main_patches():
                 start_i = random.randint(0, sample_data.shape[1] - 100)
                 start_j = random.randint(0, sample_data.shape[2] - 100)
 
-                patch_data = sample_data[:, start_i:start_i+100, start_j:start_j+100, :]
-                patch_label = sample_label[:, start_i:start_i+100, start_j:start_j+100]
+                patch_data = sample_data[i, start_i:start_i+100, start_j:start_j+100, :]
+                patch_label = sample_label[i, start_i:start_i+100, start_j:start_j+100]
 
                 sample.append({
                     'X' : patch_data,
