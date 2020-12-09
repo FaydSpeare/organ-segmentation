@@ -1,6 +1,7 @@
 import os
 import nibabel as nib
 import numpy as np
+import math
 
 from tf_utils.tfrecords import TFRecordsManager
 from tf_utils import misc
@@ -13,18 +14,24 @@ def main():
     tfrm = TFRecordsManager()
 
     misc.save_json(TFRECORD_PATH + 'params.json', {
-        'data_purposes': ['train'],
+        'data_purposes': ['train', 'val'],
         'data_keys': {
             'X': 'float32',
             'Y': 'float32'
         }
     })
 
-    if not os.path.isdir(TFRECORD_PATH + 'train'):
-        os.mkdir(TFRECORD_PATH + 'train')
+    for data_purpose in ['train', 'val']:
+        if not os.path.isdir(TFRECORD_PATH + data_purpose):
+            os.mkdir(TFRECORD_PATH + data_purpose)
 
-    for folder in os.listdir(DATA_FOLDER):
+    total_samples = len(os.listdir(DATA_FOLDER))
+    split = math.floor(0.8 * total_samples)
+
+    for idx, folder in enumerate(os.listdir(DATA_FOLDER)):
         print(f'Creating TFRecord for folder: [{folder}]')
+
+        data_purpose = 'train' if idx <= split else 'val'
 
         data_path = f'{DATA_FOLDER}/{folder}/Combined.nii'
         label_path = f'{DATA_FOLDER}/{folder}/ground.nii'
@@ -37,7 +44,7 @@ def main():
         sample_label = np.moveaxis(sample_label, 2, 0)
 
         sample = [{'X': sample_data[i], 'Y': sample_label[i]} for i in range(len(sample_data))]
-        tfrm.save_record(f'{TFRECORD_PATH}/train/{folder}', sample)
+        tfrm.save_record(f'{TFRECORD_PATH}/{data_purpose}/{folder}', sample)
 
 
 def test():
