@@ -24,24 +24,26 @@ def train():
     # Prep training data
     train_dataset = dataset['train']
     train_dataset = train_dataset.padded_batch(5, padded_shapes=padding_shapes)
+    #train_dataset = train_dataset.batch(1)
     train_dataset = train_dataset.map(lambda x: (x['X'], x['Y']))
 
     # Prep validation data
     val_dataset = dataset['val']
     val_dataset = val_dataset.padded_batch(5, padded_shapes=padding_shapes)
+    #val_dataset = val_dataset.batch(1)
     val_dataset = val_dataset.map(lambda x: (x['X'], x['Y']))
 
     # Create model
     model = CDFNet(num_filters=64, num_classes=5)
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
 
-
-
     # Fit model
     tensorboard_callback = TensorBoard(log_dir="./logs")
     early_stopping_callback = EarlyStopping(restore_best_weights=True, patience=3)
-    model.fit(train_dataset, epochs=100, callbacks=[tensorboard_callback],
-              validation_data=val_dataset, class_weight={0: 270., 1: 11., 2: 1., 3:1., 4:1.})
+    #model.fit(train_dataset, epochs=100, callbacks=[tensorboard_callback],
+    #          validation_data=val_dataset, class_weight={0: 270., 1: 11., 2: 1., 3:1., 4:1.})
+
+    model.fit(train_dataset, epochs=100, callbacks=[tensorboard_callback, early_stopping_callback], validation_data=val_dataset)
 
     # Save model
     model.save(base_path + '/model')
