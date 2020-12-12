@@ -13,7 +13,7 @@ def segment(train, val):
     x_train, y_train = train
     x_val, y_val = val
 
-    axial_model = CDFNet(num_filters=64, num_classes=6)
+    axial_model = CDFNet(num_filters=64, num_classes=5)
     axial_model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
 
     # Callbacks
@@ -38,19 +38,19 @@ def predict(model, data):
     nii_label.to_filename(DATA_FOLDER + '/pred.nii')
 
 
-def load_data(folders, type='InPhase'):
+def load_data(folders, type='Combined'):
 
     x, y = list(), list()
     for folder in folders:
 
         a = nib.load(DATA_FOLDER + f'/{folder}/{type}.nii').get_fdata().astype(np.float32) / 1000.
-        a = np.moveaxis(a, -1, 0)
+        a = np.moveaxis(a, 2, 0)
         print(a.shape)
         if len(a.shape) < 4: a = tf.expand_dims(a, axis=-1)
         x.append(a)
 
         b = nib.load(DATA_FOLDER + f'/{folder}/ground.nii').get_fdata().astype(np.float32) / 63.
-        b = np.moveaxis(b, -1, 0)
+        b = np.moveaxis(b, 2, 0)
         b = tf.expand_dims(b, axis=-1)
         y.append(b)
 
@@ -60,6 +60,6 @@ def load_data(folders, type='InPhase'):
 if __name__ == '__main__':
     print(tf.__version__)
     train_data = load_data(['2'])
-    val_data = load_data(['3'])
+    val_data = load_data(['2'])
     model = segment(train_data, val_data)
     predict(model, val_data[0])

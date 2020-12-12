@@ -3,7 +3,7 @@
 #SBATCH --job-name=OSP
 #SBATCH -n 1
 #SBATCH -c 6
-#SBATCH --mem=300000
+#SBATCH --mem=50000
 #SBATCH -o out_wiener.txt
 #SBATCH -e error_wiener.txt
 #SBATCH --partition=gpu
@@ -17,4 +17,4 @@ source activate /opt/ohpc/pub/apps/tensorflow_2.0.0
 python3.7 -m pip install --user scikit-image
 python3.7 -m pip install --user nibabel
 
-srun -n 1 python3 src/train_it.py
+srun -n 1 python3 src/main.py
