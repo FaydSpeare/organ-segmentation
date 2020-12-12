@@ -19,8 +19,8 @@ class SegSolver:
     def init_metrics(self):
         return {
             mode : {
-                'loss' : {'value' : 999, 'type' : 'Mean'},
-                'scores_by_class' : [{'value' : 0, 'type' : 'Mean'} for _ in range(self.params['out_channels'])]
+                'loss' : {'value' : 999., 'type' : 'Mean'},
+                'scores_by_class' : [{'value' : 0., 'type' : 'Mean'} for _ in range(self.params['out_channels'])]
             }
             for mode in self.modes
         }
@@ -28,9 +28,9 @@ class SegSolver:
     def run_epoch(self, dataset, mode, epoch):
 
         for batch in dataset:
-            print('Batch')
             y = tf.keras.utils.to_categorical(tf.cast(batch['Y'], tf.int32), num_classes=self.params['out_channels'])
-            predictions, metrics = self.step(batch['X'], y)
+            training = True if mode == 'train' else False
+            predictions, metrics = self.step(batch['X'], y, training=training)
             self.tb.update_metrics(metrics)
 
         self.tb.write_summary(mode, epoch)

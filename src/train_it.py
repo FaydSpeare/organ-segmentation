@@ -25,7 +25,7 @@ def main():
     network = CDFNet(num_filters=64, num_classes=5)
     solver = SegSolver(model_path, params, network)
 
-    for epoch in range(100):
+    for epoch in range(500):
 
         for mode in dataset:
             solver.run_epoch(dataset[mode], mode, epoch)
