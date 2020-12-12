@@ -35,7 +35,7 @@ class SegSolver:
 
         self.tb.write_summary(mode, epoch)
 
-
+    @tf.function
     def step(self, x, y, training=True):
 
         loss_fn = self.mm.metrics[self.params['loss_fn']]
