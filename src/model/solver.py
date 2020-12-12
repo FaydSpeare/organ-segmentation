@@ -14,7 +14,7 @@ class SegSolver:
 
         self.metrics = self.init_metrics()
         self.mm = MetricsManager()
-        self.tb = Tensorboard(model_path, self.metrics, self.modes)
+        self.tb = Tensorboard(model_path, self.metrics['train'], self.modes)
 
     def init_metrics(self):
         return {
