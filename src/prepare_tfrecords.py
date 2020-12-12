@@ -78,8 +78,8 @@ def main_patches():
         data_path = f'{DATA_FOLDER}/{folder}/Combined.nii'
         label_path = f'{DATA_FOLDER}/{folder}/ground.nii'
 
-        sample_data = nib.load(data_path).get_fdata().astype(np.float32)
-        sample_label = nib.load(label_path).get_fdata().astype(np.float32) / 63.0
+        sample_data = nib.load(data_path).get_fdata().astype(np.float32) / 1000.
+        sample_label = nib.load(label_path).get_fdata().astype(np.float32) / 63.
 
         # Rearrange data
         sample_data = np.moveaxis(sample_data, 2, 0)
@@ -126,8 +126,8 @@ def test():
 
 
 if __name__ == '__main__':
-    main_patches()
-    #main()
+    #main_patches()
+    main()
     #test()
 
 

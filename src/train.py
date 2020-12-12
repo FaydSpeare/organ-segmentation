@@ -20,6 +20,7 @@ def train():
 
     padding_shapes = {'X' : (304, 304, 2), 'Y' : (304, 304)}
 
+
     # Prep training data
     train_dataset = dataset['train']
     train_dataset = train_dataset.padded_batch(5, padded_shapes=padding_shapes)
@@ -33,6 +34,8 @@ def train():
     # Create model
     model = CDFNet(num_filters=64, num_classes=5)
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
+
+
 
     # Fit model
     tensorboard_callback = TensorBoard(log_dir="./logs")
