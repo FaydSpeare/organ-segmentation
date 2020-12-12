@@ -20,7 +20,7 @@ class SegSolver:
         return {
             mode : {
                 'loss' : {'value' : 999, 'type' : 'Mean'},
-                'score_by_class' : [{'value' : 0, 'type' : 'Mean'} for _ in range(self.params['out_channels'])]
+                'scores_by_class' : [{'value' : 0, 'type' : 'Mean'} for _ in range(self.params['out_channels'])]
             }
             for mode in self.modes
         }
