@@ -25,15 +25,17 @@ class SegSolver:
             for mode in self.modes
         }
 
-    def run_epoch(self, dataset):
+    def run_epoch(self, dataset, mode, epoch):
 
         for batch in dataset:
+            print('Batch')
             y = tf.keras.utils.to_categorical(tf.cast(batch['Y'], tf.int32), num_classes=self.params['out_channels'])
             predictions, metrics = self.step(batch['X'], y)
             self.tb.update_metrics(metrics)
 
+        self.tb.write_summary(mode, epoch)
 
-    @tf.function
+
     def step(self, x, y, training=True):
 
         loss_fn = self.mm.metrics[self.params['loss_fn']]
