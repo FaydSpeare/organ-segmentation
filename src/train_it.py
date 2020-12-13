@@ -5,7 +5,7 @@ from model.solver import SegSolver
 def main():
 
     params = {
-        'loss_fn' : 'DICEL',
+        'loss_fn' : 'CE',
         'out_channels' : 5,
         'learning_rate' : 0.001
     }
