@@ -20,7 +20,8 @@ class SegSolver:
         return {
             mode : {
                 'loss' : {'value' : 999., 'type' : 'Mean'},
-                'scores_by_class' : [{'value' : 0., 'type' : 'Mean'} for _ in range(self.params['out_channels'])]
+                'score_by_class' : [{'value' : 0., 'type' : 'Mean'} for _ in range(self.params['out_channels'])],
+                'accuracy_by_class' : [{'value' : 0., 'type' : 'Mean'} for _ in range(self.params['out_channels'])]
             }
             for mode in self.modes
         }
@@ -47,20 +48,32 @@ class SegSolver:
 
             gradients = tape.gradient(loss, self.network.trainable_variables)
             scores_by_class = self.mm.dice_score_from_logits(y, logits, probs=True)
+            class_accuracies = self.class_accuracy_from_logits(y, logits)
             self.optimizer.apply_gradients(zip(gradients, self.network.trainable_variables))
 
         else:
 
             logits = self.network(x, training=False)
             scores_by_class = self.mm.dice_score_from_logits(y, logits, probs=True)
+            class_accuracies = self.class_accuracy_from_logits(y, logits)
             loss = loss_fn(y, logits, probs=True)
 
-        return misc.get_argmax_prediction(logits), {'loss' : loss, 'scores_by_class' : scores_by_class}
+        return misc.get_argmax_prediction(logits), {'loss' : loss, 'score_by_class' : scores_by_class, 'accuracy_by_class' : class_accuracies}
 
 
 
 
+    def class_accuracy_from_logits(self, one_hot, probs):
 
+        # Axes which don't contain batches or classes (i.e. exclude first and last axes)
+        target_axes = list(range(len(probs.shape)))[1:-1]
+
+        intersect = tf.reduce_sum(probs * one_hot, axis=target_axes)
+        denominator = tf.reduce_sum(probs, axis=target_axes)
+
+        class_accuracies = tf.reduce_mean(intersect / (denominator + 1e-6), axis=0)
+
+        return class_accuracies
 
 
 
