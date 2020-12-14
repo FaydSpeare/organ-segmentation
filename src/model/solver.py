@@ -68,8 +68,9 @@ class SegSolver:
         # Axes which don't contain batches or classes (i.e. exclude first and last axes)
         target_axes = list(range(len(probs.shape)))[1:-1]
 
-        intersect = tf.reduce_sum(probs * one_hot, axis=target_axes)
-        denominator = tf.reduce_sum(probs, axis=target_axes)
+        argmax_one_hot = tf.keras.utils.to_categorical(tf.math.argmax(probs, axis=-1), num_classes=self.params['out_channels'])
+        intersect = tf.reduce_sum(argmax_one_hot * one_hot, axis=target_axes)
+        denominator = tf.reduce_sum(one_hot, axis=target_axes)
 
         class_accuracies = tf.reduce_mean(intersect / (denominator + 1e-6), axis=0)
 
