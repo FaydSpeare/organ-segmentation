@@ -33,7 +33,7 @@ def main():
         for mode in dataset:
             solver.run_epoch(dataset[mode], mode, epoch)
 
-    test = load_data(['2'])
+    test = load_data(['3'])
     predict(network, test[0])
 
 
