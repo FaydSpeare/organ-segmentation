@@ -1,4 +1,3 @@
-
 from tf_utils import TFRecordsManager, misc, CDFNet
 from model.solver import SegSolver
 
@@ -25,7 +24,7 @@ def main():
     network = CDFNet(num_filters=64, num_classes=5)
     solver = SegSolver(model_path, params, network)
 
-    for epoch in range(500):
+    for epoch in range(10):
 
         for mode in dataset:
             solver.run_epoch(dataset[mode], mode, epoch)

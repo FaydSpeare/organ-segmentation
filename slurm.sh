@@ -4,8 +4,8 @@
 #SBATCH -n 1
 #SBATCH -c 6
 #SBATCH --mem=50000
-#SBATCH -o out_wiener.txt
-#SBATCH -e error_wiener.txt
+#SBATCH -o stdout.txt
+#SBATCH -e stderr.txt
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:1
 
