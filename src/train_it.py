@@ -35,17 +35,13 @@ def main():
         for mode in dataset:
             solver.run_epoch(dataset[mode], mode, epoch)
 
-        train_loss = solver.metrics["train"]["loss"]["value"]
         val_loss = solver.metrics["val"]["loss"]["value"]
-        print(f'BestTrainLoss:[{train_loss} BestValLoss:[{val_loss}] EST:[{solver.early_stopping_tick}]', flush=True)
+        print(f'BestValLoss:[{val_loss}] EST:[{solver.early_stopping_tick}]', flush=True)
         if solver.early_stopping_tick > 10:
             break
 
     test = load_data(['3'])
     predict(network, test[0])
-
-    # Save model
-    # network.save(base_path + '/model')
 
 
 def predict(model, data):
