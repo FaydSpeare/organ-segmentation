@@ -35,8 +35,9 @@ def main():
         for mode in dataset:
             solver.run_epoch(dataset[mode], mode, epoch)
 
-        val_loss = solver.metrics["val"]["loss"]["value"]
-        print(f'BestValLoss:[{val_loss}] EST:[{solver.early_stopping_tick}]', flush=True)
+        best_val_loss = solver.metrics["val"]["loss"]["value"]
+        val_loss = solver.tb.get_current_metrics()["loss"]
+        print(f'ValLoss:[{val_loss}] BestValLoss:[{best_val_loss}] EST:[{solver.early_stopping_tick}]', flush=True)
         if solver.early_stopping_tick > 10:
             break
 
