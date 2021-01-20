@@ -37,7 +37,8 @@ def main():
         data_path = f'{DATA_FOLDER}/{folder}/Combined.nii'
         label_path = f'{DATA_FOLDER}/{folder}/ground.nii'
 
-        sample_data = nib.load(data_path).get_fdata().astype(np.float32) / 1000.
+        sample_data = nib.load(data_path).get_fdata().astype(np.float32)
+        sample_data = sample_data / float(np.max(sample_data) / 2)
         sample_label = nib.load(label_path).get_fdata().astype(np.float32) / 63.0
 
         # Rearrange data
