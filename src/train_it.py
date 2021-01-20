@@ -28,10 +28,14 @@ def main():
     network = CDFNet(num_filters=64, num_classes=5)
     solver = SegSolver(model_path, params, network)
 
-    for epoch in range(20):
+    for epoch in range(1000):
 
         for mode in dataset:
             solver.run_epoch(dataset[mode], mode, epoch)
+
+        print(f'BestLoss:[{solver.metrics["train"]["loss"]["value"]} EST:[{solver.early_stopping_tick}]')
+        if solver.early_stopping_tick > 10:
+            break
 
     test = load_data(['3'])
     predict(network, test[0])
