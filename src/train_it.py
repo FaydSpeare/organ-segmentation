@@ -10,7 +10,7 @@ def main():
     print('Starting Training')
 
     params = {
-        'loss_fn' : 'CE',
+        'loss_fn' : 'DICEL',
         'out_channels' : 5,
         'learning_rate' : 0.001
     }
@@ -38,7 +38,7 @@ def main():
         best_val_loss = solver.metrics["val"]["loss"]["value"]
         val_loss = solver.tb.get_current_metrics()["loss"]
         print(f'ValLoss:[{val_loss}] BestValLoss:[{best_val_loss}] EST:[{solver.early_stopping_tick}]', flush=True)
-        if solver.early_stopping_tick > 10:
+        if solver.early_stopping_tick > 30:
             break
 
     test = load_data(['3'])
@@ -77,7 +77,8 @@ def load_data(folders, type='Combined'):
     x, y = list(), list()
     for folder in folders:
 
-        a = nib.load(base_path + f'/{folder}/{type}.nii').get_fdata().astype(np.float32) / 1000.
+        a = nib.load(base_path + f'/{folder}/{type}.nii').get_fdata().astype(np.float32)
+        a = a / float(np.max(a) / 2)
         a = np.moveaxis(a, -2, 0)
         print(a.shape)
         if len(a.shape) < 4: a = tf.expand_dims(a, axis=-1)
