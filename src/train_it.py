@@ -36,6 +36,9 @@ def main():
     test = load_data(['3'])
     predict(network, test[0])
 
+    # Save model
+    network.save(base_path + '/model')
+
 
 def predict(model, data):
 
