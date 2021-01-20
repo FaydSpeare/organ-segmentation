@@ -91,7 +91,7 @@ class SegSolver:
             self.early_stopping_tick = 0
             self.metrics[mode]['loss']['value'] = epoch_metrics['loss']
             base_path, _ = misc.get_base_path(training=True)
-            self.network.save(base_path + '/model')
+            self.network.save_weights(base_path + '/model')
         self.early_stopping_tick += 1
 
 
