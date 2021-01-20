@@ -7,7 +7,7 @@ import math
 
 def main():
 
-    print('ok')
+    print('Starting Training')
 
     params = {
         'loss_fn' : 'CE',
@@ -25,7 +25,7 @@ def main():
     # Create Padded Batches
     padding_shapes = {'X': (304, 304, 2), 'Y': (304, 304)}
     for mode in dataset:
-        dataset[mode] = dataset[mode].padded_batch(1, padded_shapes=padding_shapes)
+        dataset[mode] = dataset[mode].padded_batch(5, padded_shapes=padding_shapes)
 
     network = CDFNet(num_filters=64, num_classes=5)
     solver = SegSolver(model_path, params, network)
