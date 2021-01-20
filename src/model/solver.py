@@ -16,10 +16,12 @@ class SegSolver:
         self.mm = MetricsManager()
         self.tb = Tensorboard(model_path, self.metrics['train'], self.modes)
 
+        self.early_stopping_tick = 0
+
     def init_metrics(self):
         return {
             mode : {
-                'loss' : {'value' : 999., 'type' : 'Mean'},
+                'loss' : {'value' : 10000., 'type' : 'Mean'},
                 'score_by_class' : [{'value' : 0., 'type' : 'Mean'} for _ in range(self.params['out_channels'])],
                 'accuracy_by_class' : [{'value' : 0., 'type' : 'Mean'} for _ in range(self.params['out_channels'])]
             }
@@ -28,10 +30,16 @@ class SegSolver:
 
     def run_epoch(self, dataset, mode, epoch):
 
+        assert mode in ['train', 'val']
+
         for batch in dataset:
             y = tf.keras.utils.to_categorical(tf.cast(batch['Y'], tf.int32), num_classes=self.params['out_channels'])
             predictions, metrics = self.step(batch['X'], y, training=(mode == 'train'))
             self.tb.update_metrics(metrics)
+
+        if mode == 'val':
+            self.save_model()
+
 
         self.tb.write_summary(mode, epoch)
 
@@ -75,6 +83,16 @@ class SegSolver:
         class_accuracies = tf.reduce_mean(intersect / (denominator + 1e-6), axis=0)
 
         return class_accuracies
+
+    def save_model(self, mode):
+        epoch_metrics = self.tb.get_current_metrics()
+        smaller_loss = epoch_metrics['loss'] < self.metrics[mode]['loss']['value']
+        if smaller_loss:
+            self.early_stopping_tick = 0
+            self.metrics[mode]['loss']['value'] = epoch_metrics['loss']
+            base_path, _ = misc.get_base_path(training=True)
+            self.network.save(base_path + '/model')
+        self.early_stopping_tick += 1
 
 
 
