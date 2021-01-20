@@ -41,7 +41,7 @@ def main():
     predict(network, test[0])
 
     # Save model
-    network.save(base_path + '/model')
+    # network.save(base_path + '/model')
 
 
 def predict(model, data):
