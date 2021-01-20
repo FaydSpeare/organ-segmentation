@@ -33,7 +33,7 @@ def main():
         for mode in dataset:
             solver.run_epoch(dataset[mode], mode, epoch)
 
-        print(f'BestLoss:[{solver.metrics["train"]["loss"]["value"]} EST:[{solver.early_stopping_tick}]')
+        print(f'BestLoss:[{solver.metrics["train"]["loss"]["value"]} EST:[{solver.early_stopping_tick}]', flush=True)
         if solver.early_stopping_tick > 10:
             break
 
