@@ -7,6 +7,8 @@ import math
 
 def main():
 
+    print('ok')
+
     params = {
         'loss_fn' : 'CE',
         'out_channels' : 5,
@@ -23,7 +25,7 @@ def main():
     # Create Padded Batches
     padding_shapes = {'X': (304, 304, 2), 'Y': (304, 304)}
     for mode in dataset:
-        dataset[mode] = dataset[mode].padded_batch(5, padded_shapes=padding_shapes)
+        dataset[mode] = dataset[mode].padded_batch(1, padded_shapes=padding_shapes)
 
     network = CDFNet(num_filters=64, num_classes=5)
     solver = SegSolver(model_path, params, network)
@@ -33,7 +35,9 @@ def main():
         for mode in dataset:
             solver.run_epoch(dataset[mode], mode, epoch)
 
-        print(f'BestLoss:[{solver.metrics["train"]["loss"]["value"]} EST:[{solver.early_stopping_tick}]', flush=True)
+        train_loss = solver.metrics["train"]["loss"]["value"]
+        val_loss = solver.metrics["val"]["loss"]["value"]
+        print(f'BestTrainLoss:[{train_loss} BestValLoss:[{val_loss}] EST:[{solver.early_stopping_tick}]', flush=True)
         if solver.early_stopping_tick > 10:
             break
 

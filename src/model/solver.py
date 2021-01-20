@@ -38,7 +38,7 @@ class SegSolver:
             self.tb.update_metrics(metrics)
 
         if mode == 'val':
-            self.save_model()
+            self.save_model(mode)
 
 
         self.tb.write_summary(mode, epoch)
