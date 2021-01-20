@@ -4,8 +4,8 @@
 #SBATCH -n 1
 #SBATCH -c 6
 #SBATCH --mem=50000
-#SBATCH -o stdout.txt
-#SBATCH -e stderr.txt
+#SBATCH -o out.txt
+#SBATCH -e err.txt
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:1
 
