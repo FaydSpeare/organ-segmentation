@@ -59,7 +59,7 @@ class TFRecordsManager:
         return {key: tf.io.parse_tensor(parsed_record[key], self.types[keys[key]]) for key in keys}
 
     def load_datasets(self, path, batch_size):
-        params = misc.load_json(path + "/params.json")
+        params = misc.load_json(path + "params.json")
 
         datasets = {}
         for data_purpose in params["data_purposes"]:
@@ -74,7 +74,7 @@ class TFRecordsManager:
         return datasets
 
     def load_datasets_without_batching(self, path):
-        params = misc.load_json(path + "/params.json")
+        params = misc.load_json(path + "params.json")
 
         datasets = {}
         for data_purpose in params["data_purposes"]:

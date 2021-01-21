@@ -21,7 +21,7 @@ def main():
 
     # Load TFRecords
     tfrm = TFRecordsManager()
-    dataset = tfrm.load_datasets_without_batching(misc.get_tfrecords_path())
+    dataset = tfrm.load_datasets_without_batching(misc.get_tfrecords_path() + '/')
 
     # Create Padded Batches
     # TODO move padding to creation of tfrecords
