@@ -8,19 +8,20 @@ VOLUME_PATH = '/home/fayd/Data/Unlabelled/data/sub-10010_{}.nii'
 
 if __name__ == '__main__':
 
-    for i in [14, 15, 16, 17]:
+    for i in [16]:
         og_data = nib.load(VOLUME_PATH.format(i)).get_fdata()
         base_path, _ = misc.get_base_path(training=True)
-        #data = np.moveaxis(data, -2, 0)
-        #print(a.shape)
-        #if len(a.shape) < 4: a = tf.expand_dims(a, axis=-1)
 
-        data = og_data.astype(np.float32) / 100.
-        data_combined = tf.stack([data, data])
-        data_combined = np.swapaxes(data_combined, 0, 3)
-        data_combined = tf.pad(data_combined, paddings=tf.constant([[0, 0,], [0, 0,], [3, 3,], [0, 0,]]))
+        nii_label = nib.Nifti1Image(tf.pad(og_data, paddings=tf.constant([[0, 0, ], [3, 3, ], [0, 0, ]])), affine=np.eye(4))
+        nii_label.to_filename(base_path + f'/data_{i}.nii')
+
+        data = np.moveaxis(og_data, -1, 0).astype(np.float32)
+        data = data / float(np.max(data) / 2)
+        data = tf.expand_dims(data, axis=-1)
+        data = tf.concat([data, data], axis=-1)
+        data_combined = tf.pad(data, paddings=tf.constant([[0, 0,], [0, 0,], [3, 3,], [0, 0,]]))
         network = CDFNet(num_filters=64, num_classes=5)
-        network.load_weights(base_path + 'model/model_weights')
+        network.load_weights(base_path + 'dice_model/model_weights')
 
         xs = []
         for x in tf.data.Dataset.from_tensor_slices(data_combined).batch(10):
