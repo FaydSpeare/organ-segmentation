@@ -96,7 +96,7 @@ class Solver:
 
 
     def save_model(self):
-        smaller_loss = self.metrics['loss'].result() < self.best_val_loss
+        smaller_loss = self.best_val_loss is None or self.metrics['loss'].result() < self.best_val_loss
         if smaller_loss:
             self.early_stopping_tick = 0
             self.best_val_loss = self.metrics['loss'].result()
