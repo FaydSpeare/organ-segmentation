@@ -25,8 +25,8 @@ def sparse_categorical_crossentropy(y_true, y_pred, from_logits=False):
     return tf.reduce_mean(tf.losses.sparse_categorical_crossentropy(y_true, y_pred, from_logits=from_logits))
 
 
-def dice_loss(self, one_hot, logits, from_logits=False):
-        return 1. - tf.reduce_mean(self.dice_score_from_logits(one_hot, logits, from_logits=from_logits))
+def dice_loss(one_hot, logits, from_logits=False):
+        return 1. - tf.reduce_mean(dice_score_from_logits(one_hot, logits, from_logits=from_logits))
 
 
 def dice_score_from_logits(y_true, y_pred, from_logits=False):
