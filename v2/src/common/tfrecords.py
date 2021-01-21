@@ -74,7 +74,7 @@ class TFRecordsManager:
         return datasets
 
     def load_datasets_without_batching(self, path):
-        params = misc.load_json(path + "params.json")
+        params = misc.load_json(path + "/params.json")
 
         datasets = {}
         for data_purpose in params["data_purposes"]:
