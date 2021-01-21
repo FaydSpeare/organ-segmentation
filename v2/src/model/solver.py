@@ -48,7 +48,8 @@ class Solver:
         assert mode in self.params['modes']
         is_training = mode == 'train'
         for batch in dataset:
-            _, batch_metrics = self.step(batch['X'], batch['Y'], training=is_training)
+            y = tf.keras.utils.to_categorical(tf.cast(batch['Y'], tf.int32), num_classes=self.params['out_channels'])
+            _, batch_metrics = self.step(batch['X'], y, training=is_training)
             self.update_metrics(batch_metrics)
         if mode == 'val': self.save_model()
         self.tensorboard.write_scalars(self.metrics, mode, self.epoch)

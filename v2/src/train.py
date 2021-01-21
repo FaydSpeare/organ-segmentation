@@ -12,7 +12,7 @@ from common import misc
 def main():
 
     params = {
-        'loss_fn' : 'SCCE',
+        'loss_fn' : 'CCE',
         'out_channels' : 5,
         'learning_rate' : 0.0001,
         'optimiser' : 'adam',
