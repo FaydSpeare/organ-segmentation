@@ -1,4 +1,5 @@
 import tensorflow as tf
+import os
 
 from common import Losses, Optimisers, TensorBoard, misc
 from common.loss import dice_score_from_logits
@@ -98,7 +99,6 @@ class Solver:
         if smaller_loss:
             self.early_stopping_tick = 0
             self.best_val_loss = self.metrics['loss'].result()
-            base_path = misc.get_base_path()
-            self.network.save_weights(base_path + '/model/model_weights')
+            self.network.save_weights(self.params['path'] + '/model_weights')
         self.early_stopping_tick += 1
 
