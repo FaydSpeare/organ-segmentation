@@ -23,17 +23,16 @@ def main():
 
     # Load TFRecords
     tfrm = TFRecordsManager()
+    dataset = tfrm.load_datasets(misc.get_tfrecords_path() + f"/{params['tfrecords']}/", 5)
+
     #dataset = tfrm.load_datasets_without_batching(misc.get_tfrecords_path() + f"/{params['tfrecords']}/")
-    dataset = tfrm.load_datasets_without_batching(misc.get_tfrecords_path() + "/")
+    #dataset = tfrm.load_datasets_without_batching(misc.get_tfrecords_path() + "/")
 
     # Create Padded Batches
     # TODO move padding to creation of tfrecords
-    padding_shapes = {'X': (304, 304, 2), 'Y': (304, 304)}
-    for mode in dataset:
-        dataset[mode] = dataset[mode].padded_batch(5, padded_shapes=padding_shapes)
-
-
-
+    # padding_shapes = {'X': (304, 304, 2), 'Y': (304, 304)}
+    # for mode in dataset:
+    #     dataset[mode] = dataset[mode].padded_batch(5, padded_shapes=padding_shapes)
 
     network = CDFNet(num_filters=64, num_classes=5)
     solver = Solver(network, params)
