@@ -12,6 +12,7 @@ from common import misc
 def main():
 
     params = {
+        'tfrecords' : 'axial',
         'loss_fn' : 'CCE',
         'out_channels' : 5,
         'learning_rate' : 0.001,
@@ -22,7 +23,7 @@ def main():
 
     # Load TFRecords
     tfrm = TFRecordsManager()
-    dataset = tfrm.load_datasets_without_batching(misc.get_tfrecords_path() + '/')
+    dataset = tfrm.load_datasets_without_batching(misc.get_tfrecords_path() + f"/{params['tfrecords']}/")
 
     # Create Padded Batches
     # TODO move padding to creation of tfrecords

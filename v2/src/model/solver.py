@@ -49,8 +49,13 @@ class Solver:
         is_training = mode == 'train'
         for batch in dataset:
             y = tf.keras.utils.to_categorical(tf.cast(batch['Y'], tf.int32), num_classes=self.params['out_channels'])
-            _, batch_metrics = self.step(batch['X'], y, training=is_training)
-            self.update_metrics(batch_metrics)
+            logits, loss = self.step(batch['X'], y, training=is_training)
+
+            # Update metrics
+            dice_scores = dice_score_from_logits(y, logits)
+            class_accuracies = self.class_accuracy_from_logits(y, logits)
+            self.update_metrics({'loss' : loss, 'dice_scores' : dice_scores, 'accuracies' : class_accuracies})
+
         if mode == 'val': self.save_model()
         self.tensorboard.write_scalars(self.metrics, mode, self.epoch)
         current_metrics = self.current_metrics()
@@ -74,9 +79,7 @@ class Solver:
             logits = self.network(x, training=False)
             loss = self.loss_fn(y, logits)
 
-        dice_scores = dice_score_from_logits(y, logits)
-        class_accuracies = self.class_accuracy_from_logits(y, logits)
-        return misc.get_argmax_prediction(logits), {'loss' : loss, 'dice_scores' : dice_scores, 'accuracies' : class_accuracies}
+        return logits, loss
 
 
 
