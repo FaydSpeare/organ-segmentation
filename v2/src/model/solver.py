@@ -15,7 +15,7 @@ class Solver:
         self.loss_fn = Losses.get_loss_fn(params)
         self.tensorboard = TensorBoard(params)
         self.metrics = self.init_metrics()
-        self.epoch = 1
+        self.epoch = 0
         self.early_stopping_tick = 0
         self.best_val_loss = None
 
@@ -57,10 +57,10 @@ class Solver:
             self.update_metrics({'loss' : loss, 'dice_scores' : dice_scores, 'accuracies' : class_accuracies})
 
         if mode == 'val': self.save_model()
+        if mode == 'train' : self.epoch += 1
         self.tensorboard.write_scalars(self.metrics, mode, self.epoch)
         current_metrics = self.current_metrics()
         self.reset_metrics()
-        self.epoch += 1
         return current_metrics
 
 
