@@ -24,7 +24,10 @@ def new_checkpoint_path(prefix=""):
 
 
 def get_tfrecords_path():
-    return get_base_path() + "/tfrecords"
+    path = get_base_path() + "/tfrecords"
+    if not os.path.exists(path):
+        os.mkdir(path)
+    return path
 
 
 def save_pickle(path, array):
