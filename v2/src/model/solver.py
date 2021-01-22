@@ -60,7 +60,7 @@ class Solver:
 
 
 
-    #@tf.function
+    @tf.function
     def step(self, x, y, training=True):
 
         if training:

@@ -14,7 +14,7 @@ def main():
     params = {
         'loss_fn' : 'CCE',
         'out_channels' : 5,
-        'learning_rate' : 0.0001,
+        'learning_rate' : 0.001,
         'optimiser' : 'adam',
         'path' : misc.new_checkpoint_path(),
         'modes' : ['train', 'val']
