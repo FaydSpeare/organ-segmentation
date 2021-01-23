@@ -12,12 +12,13 @@ from common import misc
 def main():
 
     params = {
-        'tfrecords' : 'axial',
-        'loss_fn' : 'DICEL',
+        'tfrecords' : 'sagittal',
+        'loss_fn' : 'CCE',
         'out_channels' : 5,
         'learning_rate' : 0.001,
         'optimiser' : 'adam',
-        'modes' : ['train', 'val']
+        'modes' : ['train', 'val'],
+        'batch_size' : 30
     }
 
     # Create new folder for training
@@ -25,7 +26,7 @@ def main():
 
     # Load TFRecords
     tfrm = TFRecordsManager()
-    dataset = tfrm.load_datasets(misc.get_tfrecords_path() + f"/{params['tfrecords']}/", 5)
+    dataset = tfrm.load_datasets(misc.get_tfrecords_path() + f"/{params['tfrecords']}/", params['batch_size'])
 
     network = CDFNet(num_filters=64, num_classes=5)
     solver = Solver(network, params)

@@ -83,7 +83,7 @@ def create_tfrecords():
 
         print(f'Coronal: data shape: {coronal_data.shape} ~ label shape: {coronal_label.shape}')
         sample = [{'X': coronal_data[i], 'Y': coronal_label[i]} for i in range(len(coronal_data))]
-        tfrm.save_record(tfrecord_path + f'/sagittal/{data_purpose}/{folder}', sample)
+        tfrm.save_record(tfrecord_path + f'/coronal/{data_purpose}/{folder}', sample)
 
         print('\n')
 
