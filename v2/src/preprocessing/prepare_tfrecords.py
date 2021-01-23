@@ -31,7 +31,7 @@ def create_tfrecords():
         if not os.path.isdir(path):
             os.mkdir(path)
 
-        misc.save_json(path, params)
+        misc.save_json(path + 'params.json', params)
 
         for data_purpose in ['train', 'val']:
             if not os.path.isdir(path + data_purpose):
@@ -59,14 +59,31 @@ def create_tfrecords():
         axial_label = tf.image.resize_with_crop_or_pad(axial_label, 288, 288)
         axial_label = tf.squeeze(axial_label, axis=-1)
 
-        print(f'data shape: {axial_data.shape} ~ label shape: {axial_label.shape}')
+        print(f'Axial: data shape: {axial_data.shape} ~ label shape: {axial_label.shape}')
         sample = [{'X': axial_data[i], 'Y': axial_label[i]} for i in range(len(axial_data))]
         tfrm.save_record(tfrecord_path + f'/axial/{data_purpose}/{folder}', sample)
-        print('Create axial record.')
 
         # Sagittal view
+        sagittal_data = np.moveaxis(data, 1, 0)
+        sagittal_data = tf.image.resize_with_crop_or_pad(sagittal_data, 288, 48)
+
+        sagittal_label = np.moveaxis(label, 1, 0)
+        sagittal_label = tf.image.resize_with_crop_or_pad(sagittal_label, 288, 48)
+        sagittal_label = tf.squeeze(sagittal_label, axis=-1)
+
+        print(f'Sagittal: data shape: {sagittal_data.shape} ~ label shape: {sagittal_label.shape}')
+        sample = [{'X': sagittal_data[i], 'Y': sagittal_label[i]} for i in range(len(sagittal_data))]
+        tfrm.save_record(tfrecord_path + f'/sagittal/{data_purpose}/{folder}', sample)
 
         # Coronal view
+        coronal_data = tf.image.resize_with_crop_or_pad(data, 288, 48)
+
+        coronal_label = tf.image.resize_with_crop_or_pad(label, 288, 48)
+        coronal_label = tf.squeeze(coronal_label, axis=-1)
+
+        print(f'Coronal: data shape: {coronal_data.shape} ~ label shape: {coronal_label.shape}')
+        sample = [{'X': coronal_data[i], 'Y': coronal_label[i]} for i in range(len(coronal_data))]
+        tfrm.save_record(tfrecord_path + f'/sagittal/{data_purpose}/{folder}', sample)
 
         print('\n')
 

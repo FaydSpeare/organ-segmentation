@@ -27,15 +27,6 @@ def main():
     tfrm = TFRecordsManager()
     dataset = tfrm.load_datasets(misc.get_tfrecords_path() + f"/{params['tfrecords']}/", 5)
 
-    #dataset = tfrm.load_datasets_without_batching(misc.get_tfrecords_path() + f"/{params['tfrecords']}/")
-    #dataset = tfrm.load_datasets_without_batching(misc.get_tfrecords_path() + "/")
-
-    # Create Padded Batches
-    # TODO move padding to creation of tfrecords
-    # padding_shapes = {'X': (304, 304, 2), 'Y': (304, 304)}
-    # for mode in dataset:
-    #     dataset[mode] = dataset[mode].padded_batch(5, padded_shapes=padding_shapes)
-
     network = CDFNet(num_filters=64, num_classes=5)
     solver = Solver(network, params)
     epoch_metrics = dict()
@@ -52,11 +43,10 @@ def main():
             break
 
     test = load_data(['3'])
-    predict(network, test[0])
+    predict(params['path'], network, test[0])
 
 
-def predict(model, data):
-    base_path = misc.get_base_path()
+def predict(path, model, data):
 
     output = model.predict(data)
 
@@ -73,10 +63,10 @@ def predict(model, data):
 
     # Save image 3D array as nii
     nii_label = nib.Nifti1Image(labels, affine=np.eye(4))
-    nii_label.to_filename(base_path + '/fixed_preds.nii')
+    nii_label.to_filename(path + '/seg.nii')
 
     nii_label = nib.Nifti1Image(output, affine=np.eye(4))
-    nii_label.to_filename(base_path + '/preds.nii')
+    nii_label.to_filename(path + '/pred.nii')
 
 
 def load_data(folders, type='Combined'):
