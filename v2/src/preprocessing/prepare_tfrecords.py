@@ -31,6 +31,8 @@ def create_tfrecords():
         if not os.path.isdir(path):
             os.mkdir(path)
 
+        misc.save_json(path, params)
+
         for data_purpose in ['train', 'val']:
             if not os.path.isdir(path + data_purpose):
                 os.mkdir(path + data_purpose)
