@@ -48,7 +48,7 @@ def main():
         best_val_loss = solver.best_val_loss
         val_loss = epoch_metrics['val']['loss']
         print(f'ValLoss:[{val_loss}] BestValLoss:[{best_val_loss}] EST:[{solver.early_stopping_tick}]', flush=True)
-        if solver.early_stopping_tick > 30:
+        if solver.early_stopping_tick > 10:
             break
 
     test = load_data(['3'])
