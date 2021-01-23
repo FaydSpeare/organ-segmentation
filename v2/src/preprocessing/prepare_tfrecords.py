@@ -8,6 +8,67 @@ import tensorflow as tf
 from common.tfrecords import TFRecordsManager
 from common import misc
 
+
+
+def create_tfrecords():
+
+    tfrecord_path = misc.get_tfrecords_path()
+    tfrm = TFRecordsManager()
+    total_samples = len(os.listdir('/home/fayd/Data/CHAOS'))
+    split = math.floor(0.8 * total_samples)
+    params = {
+        'data_purposes': ['train', 'val'],
+        'data_keys': {
+            'X': 'float32',
+            'Y': 'float32'
+        }
+    }
+
+    # Create necessary folders
+    for view in ['axial', 'sagittal', 'coronal']:
+
+        path = tfrecord_path + f'/{view}/'
+        if not os.path.isdir(path):
+            os.mkdir(path)
+
+        for data_purpose in ['train', 'val']:
+            if not os.path.isdir(path + data_purpose):
+                os.mkdir(path + data_purpose)
+
+    # Create records
+    for idx, folder in enumerate(os.listdir(DATA_FOLDER)):
+        print(f'Creating TFRecord for folder: [{folder}]')
+        data_purpose = 'train' if idx <= split else 'val'
+
+        data_path = f'{DATA_FOLDER}/{folder}/Combined.nii'
+        label_path = f'{DATA_FOLDER}/{folder}/ground.nii'
+
+        # Load data and labels
+        data = nib.load(data_path).get_fdata().astype(np.float32)
+        data = data / float(np.max(data) / 2)
+        label = nib.load(label_path).get_fdata().astype(np.float32) / 63.0
+        label = tf.expand_dims(label, axis=-1)
+
+        # Axial view
+        axial_data = np.moveaxis(data, 2, 0)
+        axial_data = tf.image.resize_with_crop_or_pad(axial_data, 288, 288)
+
+        axial_label = np.moveaxis(label, 2, 0)
+        axial_label = tf.image.resize_with_crop_or_pad(axial_label, 288, 288)
+        axial_label = tf.squeeze(axial_label, axis=-1)
+
+        print(f'data shape: {axial_data.shape} ~ label shape: {axial_label.shape}')
+        sample = [{'X': axial_data[i], 'Y': axial_label[i]} for i in range(len(axial_data))]
+        tfrm.save_record(tfrecord_path + f'/axial/{data_purpose}/{folder}', sample)
+        print('Create axial record.')
+
+        # Sagittal view
+
+        # Coronal view
+
+        print('\n')
+
+
 DATA_FOLDER = '/home/fayd/Data/CHAOS'
 
 def main():
@@ -152,8 +213,9 @@ def test():
 
 
 if __name__ == '__main__':
+    create_tfrecords()
     #main_patches()
-    main()
+    #main()
     #test()
 
 

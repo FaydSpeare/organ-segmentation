@@ -17,9 +17,11 @@ def main():
         'out_channels' : 5,
         'learning_rate' : 0.001,
         'optimiser' : 'adam',
-        'path' : misc.new_checkpoint_path('axial'),
         'modes' : ['train', 'val']
     }
+
+    # Create new folder for training
+    params['path'] = misc.new_checkpoint_path(params['tfrecords']),
 
     # Load TFRecords
     tfrm = TFRecordsManager()
