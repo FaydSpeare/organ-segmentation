@@ -21,7 +21,7 @@ def main():
     }
 
     # Create new folder for training
-    params['path'] = misc.new_checkpoint_path(params['tfrecords']),
+    params['path'] = misc.new_checkpoint_path(params['tfrecords'])
 
     # Load TFRecords
     tfrm = TFRecordsManager()

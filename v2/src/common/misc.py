@@ -18,7 +18,8 @@ def get_checkpoint_path():
 
 
 def new_checkpoint_path(prefix=""):
-    checkpoint_path = get_checkpoint_path() + "/" + str(prefix) + "ckp_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S") + "/"
+    if prefix != "": prefix += '-'
+    checkpoint_path = get_checkpoint_path() + "/" + prefix + "ckp_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S") + "/"
     os.mkdir(checkpoint_path)
     return checkpoint_path
 
