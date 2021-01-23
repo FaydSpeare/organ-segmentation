@@ -13,7 +13,7 @@ def main():
 
     params = {
         'tfrecords' : 'axial',
-        'loss_fn' : 'CCE',
+        'loss_fn' : 'DICEL',
         'out_channels' : 5,
         'learning_rate' : 0.001,
         'optimiser' : 'adam',
