@@ -90,6 +90,7 @@ def create_tfrecords():
 
         # Coronal view
         coronal_data = tf.image.resize_with_crop_or_pad(data, SAG, AX)
+        coronal_data = tf.cast(tf.image.resize(coronal_data, [SAG, SAG // 2]), dtype=tf.float64)
         nib.Nifti1Image(coronal_data, affine=np.eye(4)).to_filename(tfrecord_path + f'/coronal/{data_purpose}/{folder}-data')
         coronal_data = tf.cast(coronal_data, dtype=tf.float32) / float(np.max(coronal_data) / 2)
 
