@@ -9,6 +9,8 @@ from common.tfrecords import TFRecordsManager
 from common import misc
 
 
+def resize_label(label, size, alpha=63.0):
+    return tf.round(tf.image.resize(label, size, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR) / alpha) * alpha
 
 def create_tfrecords():
 
@@ -46,18 +48,23 @@ def create_tfrecords():
         label_path = f'{DATA_FOLDER}/{folder}/ground.nii'
 
         # Load data and labels
-        data = nib.load(data_path).get_fdata().astype(np.float32)
-        data = data / float(np.max(data) / 2)
-        label = nib.load(label_path).get_fdata().astype(np.float32) / 63.0
+        data = nib.load(data_path).get_fdata()
+        label = nib.load(label_path).get_fdata()
         label = tf.expand_dims(label, axis=-1)
+
+        AX, SAG, COR = 32, 288, 288
 
         # Axial view
         axial_data = np.moveaxis(data, 2, 0)
-        axial_data = tf.image.resize_with_crop_or_pad(axial_data, 288, 288)
+        axial_data = tf.image.resize_with_crop_or_pad(axial_data, SAG, COR)
+        nib.Nifti1Image(axial_data, affine=np.eye(4)).to_filename(tfrecord_path + f'/axial/{data_purpose}/{folder}-data')
+        axial_data = tf.cast(axial_data, dtype=tf.float32) / float(np.max(axial_data) / 2)
 
         axial_label = np.moveaxis(label, 2, 0)
-        axial_label = tf.image.resize_with_crop_or_pad(axial_label, 288, 288)
+        axial_label = tf.image.resize_with_crop_or_pad(axial_label, SAG, COR)
         axial_label = tf.squeeze(axial_label, axis=-1)
+        nib.Nifti1Image(axial_label, affine=np.eye(4)).to_filename(tfrecord_path + f'/axial/{data_purpose}/{folder}-label')
+        axial_label = tf.cast(axial_label, dtype=tf.float32) / 63.0
 
         print(f'Axial: data shape: {axial_data.shape} ~ label shape: {axial_label.shape}')
         sample = [{'X': axial_data[i], 'Y': axial_label[i]} for i in range(len(axial_data))]
@@ -65,21 +72,32 @@ def create_tfrecords():
 
         # Sagittal view
         sagittal_data = np.moveaxis(data, 1, 0)
-        sagittal_data = tf.image.resize_with_crop_or_pad(sagittal_data, 288, 48)
+        sagittal_data = tf.image.resize_with_crop_or_pad(sagittal_data, COR, AX)
+        sagittal_data = tf.cast(tf.image.resize(sagittal_data, [COR, COR//2]), dtype=tf.float64)
+        nib.Nifti1Image(sagittal_data, affine=np.eye(4)).to_filename(tfrecord_path + f'/sagittal/{data_purpose}/{folder}-data')
+        sagittal_data = tf.cast(sagittal_data, dtype=tf.float32) / float(np.max(sagittal_data) / 2)
 
         sagittal_label = np.moveaxis(label, 1, 0)
-        sagittal_label = tf.image.resize_with_crop_or_pad(sagittal_label, 288, 48)
+        sagittal_label = tf.image.resize_with_crop_or_pad(sagittal_label, COR, AX)
+        sagittal_label = resize_label(sagittal_label, [COR, COR//2])
         sagittal_label = tf.squeeze(sagittal_label, axis=-1)
+        nib.Nifti1Image(sagittal_label, affine=np.eye(4)).to_filename(tfrecord_path + f'/sagittal/{data_purpose}/{folder}-label')
+        sagittal_label = tf.cast(sagittal_label, dtype=tf.float32) / 63.0
 
         print(f'Sagittal: data shape: {sagittal_data.shape} ~ label shape: {sagittal_label.shape}')
         sample = [{'X': sagittal_data[i], 'Y': sagittal_label[i]} for i in range(len(sagittal_data))]
         tfrm.save_record(tfrecord_path + f'/sagittal/{data_purpose}/{folder}', sample)
 
         # Coronal view
-        coronal_data = tf.image.resize_with_crop_or_pad(data, 288, 48)
+        coronal_data = tf.image.resize_with_crop_or_pad(data, SAG, AX)
+        nib.Nifti1Image(coronal_data, affine=np.eye(4)).to_filename(tfrecord_path + f'/coronal/{data_purpose}/{folder}-data')
+        coronal_data = tf.cast(coronal_data, dtype=tf.float32) / float(np.max(coronal_data) / 2)
 
-        coronal_label = tf.image.resize_with_crop_or_pad(label, 288, 48)
+        coronal_label = tf.image.resize_with_crop_or_pad(label, SAG, AX)
+        coronal_label = resize_label(coronal_label, [SAG, SAG // 2])
         coronal_label = tf.squeeze(coronal_label, axis=-1)
+        nib.Nifti1Image(coronal_label, affine=np.eye(4)).to_filename(tfrecord_path + f'/coronal/{data_purpose}/{folder}-label')
+        coronal_label = tf.cast(coronal_label, dtype=tf.float32) / 63.0
 
         print(f'Coronal: data shape: {coronal_data.shape} ~ label shape: {coronal_label.shape}')
         sample = [{'X': coronal_data[i], 'Y': coronal_label[i]} for i in range(len(coronal_data))]

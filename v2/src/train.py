@@ -13,12 +13,12 @@ def main():
 
     params = {
         'tfrecords' : 'sagittal',
-        'loss_fn' : 'CCE',
+        'loss_fn' : 'DICEL',
         'out_channels' : 5,
         'learning_rate' : 0.001,
         'optimiser' : 'adam',
         'modes' : ['train', 'val'],
-        'batch_size' : 30
+        'batch_size' : 5
     }
 
     # Create new folder for training
