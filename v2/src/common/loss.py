@@ -30,11 +30,11 @@ def sparse_categorical_crossentropy(y_true, y_pred, from_logits=False):
 def generalised_dice_loss(one_hot, logits, from_logits=False):
     probs = tf.nn.softmax(logits) if from_logits else logits
     # Axes which don't contain batches or classes (i.e. exclude first and last axes)
-    target_axes = list(range(len(probs.shape)))[:-1]
+    target_axes = list(range(len(probs.shape)))[1:-1]
     weights = 1 / (tf.maximum(tf.reduce_sum(one_hot, axis=target_axes), 1e-6) ** 2)
     intersect = tf.reduce_sum(probs * one_hot, axis=target_axes)
     denominator = tf.reduce_sum(probs, axis=target_axes) + tf.reduce_sum(one_hot, axis=target_axes)
-    dice_score = 2. * (weights * intersect) / tf.maximum(weights * denominator, 1e-6)
+    dice_score = tf.reduce_mean(2. * (weights * intersect) / tf.maximum(weights * denominator, 1e-6), axis=0)
     return 1 - tf.reduce_mean(dice_score)
 
 
