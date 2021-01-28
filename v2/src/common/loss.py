@@ -26,19 +26,24 @@ def sparse_categorical_crossentropy(y_true, y_pred, from_logits=False):
 
 
 def dice_loss(one_hot, logits, from_logits=False):
-        target_axes = list(range(len(one_hot.shape)))[:-1]
-        present_classes = tf.cast(tf.math.count_nonzero(tf.reduce_sum(one_hot, target_axes)), tf.float32)
-        return 1. - tf.reduce_sum(dice_score_from_logits(one_hot, logits, from_logits=from_logits)) / present_classes
+    return 1. - tf.reduce_mean(dice_score_from_logits(one_hot, logits, from_logits=from_logits))
 
 
+def dice_loss_missing_classes(one_hot, logits, from_logits=False):
+    target_axes = list(range(len(one_hot.shape)))[:-1]
+    present_classes = tf.cast(tf.math.count_nonzero(tf.reduce_sum(one_hot, axis=target_axes)), tf.float32)
+    return 1. - tf.reduce_sum(dice_score_from_logits(one_hot, logits, from_logits=from_logits)) / present_classes
+
+
+# Averages over batch
 def old_dice_score_from_logits(y_true, y_pred, from_logits=False):
-        probs = tf.nn.softmax(y_pred) if from_logits else y_pred
-        # Axes which don't contain batches or classes (i.e. exclude first and last axes)
-        target_axes = list(range(len(probs.shape)))[1:-1]
-        intersect = tf.reduce_sum(probs * y_true, axis=target_axes)
-        denominator = tf.reduce_sum(probs, axis=target_axes) + tf.reduce_sum(y_true, axis=target_axes)
-        dice_score = tf.reduce_mean(2. * intersect / (denominator + 1e-6), axis=0)
-        return dice_score
+    probs = tf.nn.softmax(y_pred) if from_logits else y_pred
+    # Axes which don't contain batches or classes (i.e. exclude first and last axes)
+    target_axes = list(range(len(probs.shape)))[1:-1]
+    intersect = tf.reduce_sum(probs * y_true, axis=target_axes)
+    denominator = tf.reduce_sum(probs, axis=target_axes) + tf.reduce_sum(y_true, axis=target_axes)
+    dice_score = tf.reduce_mean(2. * intersect / (denominator + 1e-6), axis=0)
+    return dice_score
 
 
 def dice_score_from_logits(y_true, y_pred, from_logits=False):
@@ -54,12 +59,12 @@ def dice_score_from_logits(y_true, y_pred, from_logits=False):
 if __name__ == '__main__':
     x = tf.constant([[
         [1., 0., 0.],
-        [0., 1., 0.]
+        [0., 0., 1.]
     ]])
 
     y = tf.constant([[
         [1., 0., 0.],
         [0., 1., 0.]
     ]])
-    print(dice_loss(x, y))
+    print(dice_loss(y, x))
     print(dice_score_from_logits(y, x))

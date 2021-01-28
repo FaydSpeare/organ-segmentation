@@ -12,14 +12,14 @@ from common import misc
 def main():
 
     params = {
-        'prefix' : 'fixed_dicel',
-        'tfrecords' : 'sagittal',
+        'prefix' : 'redo_dicel',
+        'tfrecords' : 'axial',
         'loss_fn' : 'DICEL',
         'out_channels' : 5,
         'learning_rate' : 0.001,
         'optimiser' : 'adam',
         'modes' : ['train', 'val'],
-        'batch_size' : 20
+        'batch_size' : 10
     }
 
     # Create new folder for training
