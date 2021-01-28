@@ -6,8 +6,10 @@ class Losses:
     @staticmethod
     def get_loss_fn(params):
         name = params['loss_fn']
-        if name == 'DICEL':
+        if name == 'DICE':
             return dice_loss
+        elif name == 'GDICE':
+            return generalised_dice_loss
         elif name == 'CCE':
             return categorical_crossentropy
         elif name == 'SCCE':
@@ -23,6 +25,17 @@ def categorical_crossentropy(y_true, y_pred, from_logits=False):
 
 def sparse_categorical_crossentropy(y_true, y_pred, from_logits=False):
     return tf.reduce_mean(tf.losses.sparse_categorical_crossentropy(y_true, y_pred, from_logits=from_logits))
+
+
+def generalised_dice_loss(one_hot, logits, from_logits=False):
+    probs = tf.nn.softmax(logits) if from_logits else logits
+    # Axes which don't contain batches or classes (i.e. exclude first and last axes)
+    target_axes = list(range(len(probs.shape)))[:-1]
+    weights = 1 / (tf.maximum(tf.reduce_sum(one_hot, axis=target_axes), 1e-6) ** 2)
+    intersect = tf.reduce_sum(probs * one_hot, axis=target_axes)
+    denominator = tf.reduce_sum(probs, axis=target_axes) + tf.reduce_sum(one_hot, axis=target_axes)
+    dice_score = 2. * (weights * intersect) / tf.maximum(weights * denominator, 1e-6)
+    return 1 - tf.reduce_mean(dice_score)
 
 
 def dice_loss(one_hot, logits, from_logits=False):
@@ -59,12 +72,17 @@ def dice_score_from_logits(y_true, y_pred, from_logits=False):
 if __name__ == '__main__':
     x = tf.constant([[
         [1., 0., 0.],
-        [0., 0., 1.]
+        [0., 0., 1.],
+        [1., 0., 0.],
+        [0., 1., 0.]
     ]])
 
     y = tf.constant([[
         [1., 0., 0.],
+        [0., 1., 0.],
+        [0., 1., 0.],
         [0., 1., 0.]
     ]])
+    print(generalised_dice_loss(y, x))
     print(dice_loss(y, x))
     print(dice_score_from_logits(y, x))

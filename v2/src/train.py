@@ -14,7 +14,7 @@ def main():
     params = {
         'prefix' : 'redo_dicel',
         'tfrecords' : 'axial',
-        'loss_fn' : 'DICEL',
+        'loss_fn' : 'DICE',
         'out_channels' : 5,
         'learning_rate' : 0.001,
         'optimiser' : 'adam',
