@@ -12,7 +12,7 @@ from tf_utils import CDFNet
 def train():
 
     base_path = misc.get_base_path(training=False)
-    tfrecords_path = base_path + 'tfrecords/'
+    tfrecords_path = base_path + 'resized_samples/'
 
     # Load TFRecords
     tfrm = TFRecordsManager()

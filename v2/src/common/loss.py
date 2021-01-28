@@ -29,7 +29,7 @@ def dice_loss(one_hot, logits, from_logits=False):
         return 1. - tf.reduce_mean(dice_score_from_logits(one_hot, logits, from_logits=from_logits))
 
 
-def dice_score_from_logits(y_true, y_pred, from_logits=False):
+def old_dice_score_from_logits(y_true, y_pred, from_logits=False):
         probs = tf.nn.softmax(y_pred) if from_logits else y_pred
         # Axes which don't contain batches or classes (i.e. exclude first and last axes)
         target_axes = list(range(len(probs.shape)))[1:-1]
@@ -37,6 +37,16 @@ def dice_score_from_logits(y_true, y_pred, from_logits=False):
         denominator = tf.reduce_sum(probs, axis=target_axes) + tf.reduce_sum(y_true, axis=target_axes)
         dice_score = tf.reduce_mean(2. * intersect / (denominator + 1e-6), axis=0)
         return dice_score
+
+
+def dice_score_from_logits(y_true, y_pred, from_logits=False):
+    probs = tf.nn.softmax(y_pred) if from_logits else y_pred
+    # Axes which don't contain batches or classes (i.e. exclude first and last axes)
+    target_axes = list(range(len(probs.shape)))[0:-1]
+    intersect = tf.reduce_sum(probs * y_true, axis=target_axes)
+    denominator = tf.reduce_sum(probs, axis=target_axes) + tf.reduce_sum(y_true, axis=target_axes)
+    dice_score = 2. * intersect / (denominator + 1e-6)
+    return dice_score
 
 
 if __name__ == '__main__':

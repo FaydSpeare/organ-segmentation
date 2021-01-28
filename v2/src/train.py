@@ -18,7 +18,7 @@ def main():
         'learning_rate' : 0.001,
         'optimiser' : 'adam',
         'modes' : ['train', 'val'],
-        'batch_size' : 5
+        'batch_size' : 10
     }
 
     # Create new folder for training

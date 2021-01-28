@@ -16,7 +16,7 @@ def main():
     }
 
     base_path, model_path = misc.get_base_path(training=True)
-    tfrecords_path = base_path + 'tfrecords/'
+    tfrecords_path = base_path + 'resized_samples/'
 
     # Load TFRecords
     tfrm = TFRecordsManager()

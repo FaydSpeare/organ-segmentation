@@ -51,7 +51,7 @@ def main():
 
 def main_patches():
 
-    path = '/home/fayd/Fayd/Projects/organ-segmentation/tfrecords-patches/'
+    path = '/home/fayd/Fayd/Projects/organ-segmentation/resized_samples-patches/'
 
     tfrm = TFRecordsManager()
 

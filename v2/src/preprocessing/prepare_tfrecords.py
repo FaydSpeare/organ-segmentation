@@ -12,7 +12,7 @@ from common import misc
 def resize_label(label, size, alpha=63.0):
     return tf.round(tf.image.resize(label, size, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR) / alpha) * alpha
 
-def create_tfrecords(save_nii=True):
+def create_tfrecords(save_nii=False):
 
     tfrecord_path = misc.get_tfrecords_path()
     tfrm = TFRecordsManager()
@@ -182,7 +182,7 @@ def main():
 
 def main_patches():
 
-    path = '/home/fayd/Fayd/Projects/organ-segmentation/tfrecords-patches/'
+    path = '/home/fayd/Fayd/Projects/organ-segmentation/resized_samples-patches/'
 
     tfrm = TFRecordsManager()
 
