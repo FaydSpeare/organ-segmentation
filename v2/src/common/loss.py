@@ -37,3 +37,16 @@ def dice_score_from_logits(y_true, y_pred, from_logits=False):
         denominator = tf.reduce_sum(probs, axis=target_axes) + tf.reduce_sum(y_true, axis=target_axes)
         dice_score = tf.reduce_mean(2. * intersect / (denominator + 1e-6), axis=0)
         return dice_score
+
+
+if __name__ == '__main__':
+    x = tf.constant([[
+        [1., 0., 0.],
+        [0., 1., 0.]
+    ]])
+
+    y = tf.constant([[
+        [1., 0., 0.],
+        [0., 1., 0.]
+    ]])
+    print(dice_score_from_logits(y, x))
