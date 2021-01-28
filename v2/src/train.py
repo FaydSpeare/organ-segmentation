@@ -12,6 +12,7 @@ from common import misc
 def main():
 
     params = {
+        'prefix' : 'fixed-dicel',
         'tfrecords' : 'sagittal',
         'loss_fn' : 'DICEL',
         'out_channels' : 5,
@@ -22,7 +23,7 @@ def main():
     }
 
     # Create new folder for training
-    params['path'] = misc.new_checkpoint_path(params['tfrecords'])
+    params['path'] = misc.new_checkpoint_path(params['tfrecords'] + '_' + params['prefix'])
 
     # Load TFRecords
     tfrm = TFRecordsManager()
