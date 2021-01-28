@@ -87,7 +87,7 @@ class Solver:
     def class_accuracy_from_logits(self, one_hot, probs):
 
         # Axes which don't contain batches or classes (i.e. exclude first and last axes)
-        target_axes = list(range(len(probs.shape)))[1:-1]
+        target_axes = list(range(len(probs.shape)))[0:-1]
 
         argmax_one_hot = tf.keras.utils.to_categorical(tf.math.argmax(probs, axis=-1), num_classes=self.params['out_channels'])
         intersect = tf.reduce_sum(argmax_one_hot * one_hot, axis=target_axes)
