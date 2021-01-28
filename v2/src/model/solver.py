@@ -93,7 +93,7 @@ class Solver:
         intersect = tf.reduce_sum(argmax_one_hot * one_hot, axis=target_axes)
         denominator = tf.reduce_sum(one_hot, axis=target_axes)
 
-        class_accuracies = tf.reduce_mean(intersect / (denominator + 1e-6), axis=0)
+        class_accuracies = intersect / (denominator + 1e-6)
 
         return class_accuracies
 
