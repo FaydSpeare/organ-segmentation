@@ -26,7 +26,8 @@ def sparse_categorical_crossentropy(y_true, y_pred, from_logits=False):
 
 
 def dice_loss(one_hot, logits, from_logits=False):
-        return 1. - tf.reduce_mean(dice_score_from_logits(one_hot, logits, from_logits=from_logits))
+        present_classes = tf.math.count_nonzero(tf.reduce_sum(one_hot, axis=[0, 1]))
+        return 1. - tf.reduce_sum(dice_score_from_logits(one_hot, logits, from_logits=from_logits)) / present_classes
 
 
 def old_dice_score_from_logits(y_true, y_pred, from_logits=False):
@@ -59,4 +60,5 @@ if __name__ == '__main__':
         [1., 0., 0.],
         [0., 1., 0.]
     ]])
+    print()
     print(dice_score_from_logits(y, x))
