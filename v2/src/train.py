@@ -26,8 +26,7 @@ def main():
     p.validate(parameters)
 
     # Create folder for the new model
-    model_path = f'{parameters[p.PREFIX]}-{parameters[p.TFRECORDS].replace("/", "_")}'
-    parameters[p.MODEL_PATH] = misc.new_checkpoint_path(model_path)
+    parameters[p.MODEL_PATH] = misc.new_checkpoint_path(prefix=parameters[p.PREFIX], tfr=parameters[p.TFRECORDS])
 
     # Load TFRecords
     tfrm = TFRecordsManager()

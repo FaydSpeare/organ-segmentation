@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-import common.parameters as p
+from common import parameters as p
 
 
 class TensorBoard:

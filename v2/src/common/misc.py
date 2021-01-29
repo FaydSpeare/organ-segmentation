@@ -17,9 +17,10 @@ def get_checkpoint_path():
     return path
 
 
-def new_checkpoint_path(prefix=""):
-    if prefix != "": prefix += '-'
-    checkpoint_path = get_checkpoint_path() + "/" + prefix + datetime.datetime.now().strftime("%b-%d-%H%M%S") + "/"
+def new_checkpoint_path(prefix="_", tfr="_"):
+    date = datetime.datetime.now().strftime("%b-%d-%H%M%S")
+    tfr = tfr.replace('/', '_')
+    checkpoint_path = get_checkpoint_path() + f"/[{prefix}]-[{tfr}]-[{date}]/"
     os.mkdir(checkpoint_path)
     return checkpoint_path
 
@@ -55,7 +56,3 @@ def get_argmax_prediction(logits):
     probs = tf.nn.softmax(logits)
     predictions = tf.math.argmax(probs, axis=-1)
     return tf.cast(predictions[..., tf.newaxis], tf.float32)
-
-
-if __name__ == '__main__':
-    print(new_checkpoint_path("blah-tf[asdfasdf]"))
