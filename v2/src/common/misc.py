@@ -4,6 +4,8 @@ import datetime
 import pickle
 import json
 import tensorflow as tf
+import numpy as np
+import nibabel as nib
 
 
 def get_base_path():
@@ -11,10 +13,7 @@ def get_base_path():
 
 
 def get_checkpoint_path():
-    path = get_base_path() + '/checkpoints'
-    if not os.path.exists(path):
-        os.mkdir(path)
-    return path
+    return mkdir(get_base_path() + '/checkpoints')
 
 
 def new_checkpoint_path(prefix="_", tfr="_"):
@@ -26,16 +25,22 @@ def new_checkpoint_path(prefix="_", tfr="_"):
 
 
 def get_tfrecords_path():
-    path = get_base_path() + "/tfrecords"
-    if not os.path.exists(path):
-        os.mkdir(path)
-    return path
+    return mkdir(get_base_path() + "/tfrecords")
+
+
+def get_data_path():
+    return mkdir(get_base_path() + "/data")
 
 
 def save_pickle(path, array):
     with open(path, 'wb') as handle:
         pickle.dump(array, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
+
+def mkdir(path):
+    if not os.path.exists(path):
+        os.mkdir(path)
+    return path
 
 def load_pickle(path):
     with open(path, 'rb') as handle:
@@ -56,3 +61,7 @@ def get_argmax_prediction(logits):
     probs = tf.nn.softmax(logits)
     predictions = tf.math.argmax(probs, axis=-1)
     return tf.cast(predictions[..., tf.newaxis], tf.float32)
+
+
+def save_nii(volume, path):
+    nib.Nifti1Image(volume, affine=np.eye(4)).to_filename(path)

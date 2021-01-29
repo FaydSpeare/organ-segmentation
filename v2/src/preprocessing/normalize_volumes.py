@@ -2,7 +2,7 @@ import nibabel as nib
 import numpy as np
 import os
 
-DATA_FOLDER = '/home/fayd/Data/CHAOS'
+DATA_FOLDER = '/home/fayd/Fayd/Projects/organ-segmentation/CHAOS'
 
 def main():
 
