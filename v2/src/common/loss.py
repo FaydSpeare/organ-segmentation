@@ -1,24 +1,5 @@
 import tensorflow as tf
-
-
-class Losses:
-
-    @staticmethod
-    def get_loss_fn(params):
-        name = params['loss_fn']
-        if name == 'DICE':
-            return dice_loss
-        elif name == 'GDICE':
-            return generalised_dice_loss
-        elif name == 'BDICE':
-            return batch_dice_loss
-        elif name == 'CCE':
-            return categorical_crossentropy
-        elif name == 'SCCE':
-            return sparse_categorical_crossentropy
-        else:
-            raise NotImplementedError(f"No loss function exists with name: '{name}'")
-
+from enum import Enum
 
 
 def categorical_crossentropy(y_true, y_pred, from_logits=False):
@@ -78,6 +59,15 @@ def batch_dice_score_from_logits(y_true, y_pred, from_logits=False):
     return dice_score
 
 
+class Loss(Enum):
+    DICE = dice_loss
+    GDICE = generalised_dice_loss
+    BDICE = batch_dice_loss
+    CCE = categorical_crossentropy
+    SCCE = sparse_categorical_crossentropy
+
+
+
 if __name__ == '__main__':
     x = tf.constant([[
         [1., 0., 0.],
@@ -95,3 +85,5 @@ if __name__ == '__main__':
     print(generalised_dice_loss(y, x))
     print(dice_loss(y, x))
     print(dice_score_from_logits(y, x))
+    print(Loss.DICE(y, x))
+

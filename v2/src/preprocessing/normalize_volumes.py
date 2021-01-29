@@ -8,8 +8,7 @@ def main():
 
     # Create records
     for idx, folder in enumerate(os.listdir(DATA_FOLDER)):
-        print(f'Creating TFRecord for folder: [{folder}]')
-        if idx > 3: return
+        print(f'Creating normalized volume for folder: [{folder}]')
 
         data_path = f'{DATA_FOLDER}/{folder}/Combined.nii'
 

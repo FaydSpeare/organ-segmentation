@@ -14,7 +14,12 @@ def resize_label(label, size, alpha=63.0):
 
 def create_tfrecords(save_nii=False):
 
-    tfrecord_path = misc.get_tfrecords_path()
+    volume_name = 'Combined.nii'
+    tfrecord_path = misc.get_tfrecords_path() + '/default'
+
+    if not os.path.isdir(tfrecord_path):
+        os.mkdir(tfrecord_path)
+
     tfrm = TFRecordsManager()
     total_samples = len(os.listdir('/home/fayd/Data/CHAOS'))
     split = math.floor(0.8 * total_samples)
@@ -44,7 +49,7 @@ def create_tfrecords(save_nii=False):
         print(f'Creating TFRecord for folder: [{folder}]')
         data_purpose = 'train' if idx <= split else 'val'
 
-        data_path = f'{DATA_FOLDER}/{folder}/Combined.nii'
+        data_path = f'{DATA_FOLDER}/{folder}/{volume_name}'
         label_path = f'{DATA_FOLDER}/{folder}/ground.nii'
 
         # Load data and labels

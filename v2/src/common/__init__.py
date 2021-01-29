@@ -1,3 +1,3 @@
-from .loss import Losses
-from .optimiser import Optimisers
+from .loss import Loss
+from .optimiser import Optimiser
 from .tensorboard import TensorBoard

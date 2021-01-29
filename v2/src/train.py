@@ -6,34 +6,36 @@ import math
 from common.tfrecords import TFRecordsManager
 from model.solver import Solver
 from model.network import CDFNet
-from common import misc
+from common import misc, Optimiser, Loss
+import common.parameters as p
 
 
 def main():
 
-    params = {
-        'prefix' : 'long_gdice',
-        'tfrecords' : 'axial',
-        'loss_fn' : 'GDICE',
-        'out_channels' : 5,
-        'learning_rate' : 0.001,
-        'optimiser' : 'adam',
-        'modes' : ['train', 'val'],
-        'batch_size' : 10,
-        'val_batch_size' : 27,
-        'val_patience' : 50
-    }
+    # Parameters for training
+    parameters = p.default_parameters()
+    parameters[p.PREFIX]       = 'long_gdice_val_batch'
+    parameters[p.TFRECORDS]    = 'normalized/axial'
+    parameters[p.LOSS_FN]      =  Loss.GDICE
+    parameters[p.LR]           = 'long_gdice_val_batch'
+    parameters[p.NUM_CLASSES]  =  5
+    parameters[p.OPTIMISER]    =  Optimiser.ADAM
+    parameters[p.TRAIN_BATCH]  =  10
+    parameters[p.VAL_BATCH]    =  27
+    parameters[p.PATIENCE]     =  50
+    p.validate(parameters)
 
-    # Create new folder for training
-    params['path'] = misc.new_checkpoint_path(params['tfrecords'] + '-' + params['prefix'])
+    # Create folder for the new model
+    model_path = f'{parameters[p.PREFIX]}-{parameters[p.TFRECORDS]}'
+    parameters[p.MODEL_PATH] = misc.new_checkpoint_path(model_path)
 
     # Load TFRecords
     tfrm = TFRecordsManager()
-    tfrecord_path = misc.get_tfrecords_path() + f"/{params['tfrecords']}/"
-    dataset = tfrm.load_datasets(tfrecord_path, params['batch_size'], val_batch_size=params['val_batch_size'])
+    tfrecord_path = misc.get_tfrecords_path() + f"/{parameters[p.TFRECORDS]}/"
+    dataset = tfrm.load_datasets(tfrecord_path, parameters[p.TRAIN_BATCH], parameters[p.VAL_BATCH])
 
-    network = CDFNet(num_filters=64, num_classes=5)
-    solver = Solver(network, params)
+    network = CDFNet(num_filters=64, num_classes=parameters[p.NUM_CLASSES])
+    solver = Solver(network, parameters)
     epoch_metrics = dict()
 
     for epoch in range(1000):
@@ -44,11 +46,11 @@ def main():
         best_val_loss = solver.best_val_loss
         val_loss = epoch_metrics['val']['loss']
         print(f'ValLoss:[{val_loss}] BestValLoss:[{best_val_loss}] EST:[{solver.early_stopping_tick}]', flush=True)
-        if solver.early_stopping_tick > params['val_patience']:
+        if solver.early_stopping_tick > parameters[p.PATIENCE]:
             break
 
     test = load_data(['3'])
-    predict(params['path'], network, test[0])
+    predict(parameters[p.MODEL_PATH], network, test[0])
 
 
 def predict(path, model, data):
