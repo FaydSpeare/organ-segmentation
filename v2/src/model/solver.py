@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from common import TensorBoard
+from common import TensorBoard, Optimiser
 from common.loss import batch_dice_score_from_logits
 import common.parameters as p
 
@@ -11,7 +11,7 @@ class Solver:
     def __init__(self, network, params):
         self.network = network
         self.params = params
-        self.optimiser = params[p.OPTIMISER](learning_rate=params[p.LR])
+        self.optimiser = Optimiser.optimiser(params[p.OPTIMISER])(learning_rate=params[p.LR])
         self.loss_fn = params[p.LOSS_FN]
         self.tensorboard = TensorBoard(params)
         self.metrics = self.init_metrics()
