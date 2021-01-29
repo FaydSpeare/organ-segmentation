@@ -14,10 +14,10 @@ def main():
 
     # Parameters for training
     parameters = p.default_parameters()
-    parameters[p.PREFIX]       = 'long_gdice_val_batch'
+    parameters[p.PREFIX]       = 'GDICE'
     parameters[p.TFRECORDS]    = 'normalized/axial'
     parameters[p.LOSS_FN]      =  Loss.GDICE
-    parameters[p.LR]           = 'long_gdice_val_batch'
+    parameters[p.LR]           =  0.001
     parameters[p.NUM_CLASSES]  =  5
     parameters[p.OPTIMISER]    =  Optimiser.ADAM
     parameters[p.TRAIN_BATCH]  =  10
@@ -26,7 +26,7 @@ def main():
     p.validate(parameters)
 
     # Create folder for the new model
-    model_path = f'{parameters[p.PREFIX]}-{parameters[p.TFRECORDS]}'
+    model_path = f'{parameters[p.PREFIX]}-{parameters[p.TFRECORDS].replace("/", "_")}'
     parameters[p.MODEL_PATH] = misc.new_checkpoint_path(model_path)
 
     # Load TFRecords
