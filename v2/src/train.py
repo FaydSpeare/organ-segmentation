@@ -1,8 +1,3 @@
-import numpy as np
-import nibabel as nib
-import tensorflow as tf
-import math
-
 from common.tfrecords import TFRecordsManager
 from model.solver import Solver
 from model.network import CDFNet
