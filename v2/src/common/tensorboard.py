@@ -1,12 +1,13 @@
 import tensorflow as tf
+import common.parameters as p
 
 
 class TensorBoard:
 
 
     def __init__(self, params):
-        self.path = params['path']
-        self.modes = params['modes']
+        self.path = params[p.MODEL_PATH]
+        self.modes = params[p.MODES]
         self.writers = self.create_summary_writers()
 
 

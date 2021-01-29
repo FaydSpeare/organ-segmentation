@@ -85,16 +85,12 @@ class Solver:
 
 
     def class_accuracy_from_logits(self, one_hot, probs):
-
         # Axes which don't contain batches or classes (i.e. exclude first and last axes)
         target_axes = list(range(len(probs.shape)))[0:-1]
-
         argmax_one_hot = tf.keras.utils.to_categorical(tf.math.argmax(probs, axis=-1), num_classes=self.params[p.NUM_CLASSES])
         intersect = tf.reduce_sum(argmax_one_hot * one_hot, axis=target_axes)
         denominator = tf.reduce_sum(one_hot, axis=target_axes)
-
         class_accuracies = intersect / (denominator + 1e-6)
-
         return class_accuracies
 
 
@@ -104,5 +100,6 @@ class Solver:
             self.early_stopping_tick = 0
             self.best_val_loss = self.metrics['loss'].result()
             self.network.save_weights(self.params[p.MODEL_PATH] + '/model_weights')
+            print("Saving new model.", flush=True)
         self.early_stopping_tick += 1
 
