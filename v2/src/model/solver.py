@@ -1,8 +1,7 @@
 import tensorflow as tf
-import os
 
-from common import Losses, Optimisers, TensorBoard, misc
-from common.loss import dice_score_from_logits
+from common import Losses, Optimisers, TensorBoard
+from common.loss import batch_dice_score_from_logits
 
 
 class Solver:
@@ -52,7 +51,7 @@ class Solver:
             logits, loss = self.step(batch['X'], y, training=is_training)
 
             # Update metrics
-            dice_scores = dice_score_from_logits(y, logits)
+            dice_scores = batch_dice_score_from_logits(y, logits)
             class_accuracies = self.class_accuracy_from_logits(y, logits)
             self.update_metrics({'loss' : loss, 'dice_scores' : dice_scores, 'accuracies' : class_accuracies})
 

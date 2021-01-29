@@ -10,6 +10,8 @@ class Losses:
             return dice_loss
         elif name == 'GDICE':
             return generalised_dice_loss
+        elif name == 'BDICE':
+            return batch_dice_loss
         elif name == 'CCE':
             return categorical_crossentropy
         elif name == 'SCCE':
@@ -38,18 +40,20 @@ def generalised_dice_loss(one_hot, logits, from_logits=False):
     return 1 - tf.reduce_mean(dice_score)
 
 
-def dice_loss(one_hot, logits, from_logits=False):
-    return 1. - tf.reduce_mean(dice_score_from_logits(one_hot, logits, from_logits=from_logits))
-
-
-def dice_loss_missing_classes(one_hot, logits, from_logits=False):
+# This appears to produces strange result. Needs to be investigated.
+# Not sure whether to use with regular or batch dice loss.
+def __dice_loss_missing_classes(one_hot, logits, from_logits=False):
     target_axes = list(range(len(one_hot.shape)))[:-1]
     present_classes = tf.cast(tf.math.count_nonzero(tf.reduce_sum(one_hot, axis=target_axes)), tf.float32)
     return 1. - tf.reduce_sum(dice_score_from_logits(one_hot, logits, from_logits=from_logits)) / present_classes
 
 
-# Averages over batch
-def old_dice_score_from_logits(y_true, y_pred, from_logits=False):
+def dice_loss(one_hot, logits, from_logits=False):
+    return 1. - tf.reduce_mean(dice_score_from_logits(one_hot, logits, from_logits=from_logits))
+
+
+# Functions for regular dice loss
+def dice_score_from_logits(y_true, y_pred, from_logits=False):
     probs = tf.nn.softmax(y_pred) if from_logits else y_pred
     # Axes which don't contain batches or classes (i.e. exclude first and last axes)
     target_axes = list(range(len(probs.shape)))[1:-1]
@@ -59,7 +63,12 @@ def old_dice_score_from_logits(y_true, y_pred, from_logits=False):
     return dice_score
 
 
-def dice_score_from_logits(y_true, y_pred, from_logits=False):
+## Functions for batch dice loss
+def batch_dice_loss(one_hot, logits, from_logits=False):
+    return 1. - tf.reduce_mean(batch_dice_score_from_logits(one_hot, logits, from_logits=from_logits))
+
+
+def batch_dice_score_from_logits(y_true, y_pred, from_logits=False):
     probs = tf.nn.softmax(y_pred) if from_logits else y_pred
     # Axes which don't contain batches or classes (i.e. exclude first and last axes)
     target_axes = list(range(len(probs.shape)))[:-1]
