@@ -31,6 +31,7 @@ def predict(model_folder, data_folder):
             prediction.append(model.predict(batch))
 
         prediction = np.concatenate(prediction)
+        misc.save_nii(prediction, f'{data_path}/{folder}/{folder}-pred.nii')
 
         # Collapse the probabilities into a one hot encoding then multiply and sum
         prediction = np.eye(prediction.shape[-1])[prediction.argmax(axis=-1)]
