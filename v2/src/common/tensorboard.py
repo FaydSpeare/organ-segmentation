@@ -1,4 +1,5 @@
 import tensorflow as tf
+
 import common.parameters as p
 
 

@@ -1,4 +1,5 @@
-from common import Loss, Optimiser
+from common import Optimiser
+from common import Loss
 
 PREFIX = 'prefix'
 TFRECORDS = 'tfrecords'
