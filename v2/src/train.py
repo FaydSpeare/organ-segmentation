@@ -12,14 +12,16 @@ from common import misc
 def main():
 
     params = {
-        'prefix' : 'redo_dicel',
+        'prefix' : 'long_gdice',
         'tfrecords' : 'axial',
-        'loss_fn' : 'DICE',
+        'loss_fn' : 'GDICE',
         'out_channels' : 5,
         'learning_rate' : 0.001,
         'optimiser' : 'adam',
         'modes' : ['train', 'val'],
-        'batch_size' : 10
+        'batch_size' : 10,
+        'val_batch_size' : 27,
+        'val_patience' : 50
     }
 
     # Create new folder for training
@@ -27,7 +29,8 @@ def main():
 
     # Load TFRecords
     tfrm = TFRecordsManager()
-    dataset = tfrm.load_datasets(misc.get_tfrecords_path() + f"/{params['tfrecords']}/", params['batch_size'])
+    tfrecord_path = misc.get_tfrecords_path() + f"/{params['tfrecords']}/"
+    dataset = tfrm.load_datasets(tfrecord_path, params['batch_size'], val_batch_size=params['val_batch_size'])
 
     network = CDFNet(num_filters=64, num_classes=5)
     solver = Solver(network, params)
@@ -41,7 +44,7 @@ def main():
         best_val_loss = solver.best_val_loss
         val_loss = epoch_metrics['val']['loss']
         print(f'ValLoss:[{val_loss}] BestValLoss:[{best_val_loss}] EST:[{solver.early_stopping_tick}]', flush=True)
-        if solver.early_stopping_tick > 10:
+        if solver.early_stopping_tick > params['val_patience']:
             break
 
     test = load_data(['3'])

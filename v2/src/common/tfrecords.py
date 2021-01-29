@@ -58,7 +58,7 @@ class TFRecordsManager:
         parsed_record = tf.io.parse_single_example(record, features)
         return {key: tf.io.parse_tensor(parsed_record[key], self.types[keys[key]]) for key in keys}
 
-    def load_datasets(self, path, batch_size):
+    def load_datasets(self, path, batch_size, val_batch_size=None):
         params = misc.load_json(path + "params.json")
 
         datasets = {}
@@ -68,7 +68,10 @@ class TFRecordsManager:
 
             dataset = dataset.shuffle(100)
             #dataset = dataset.batch(batch_size) if "train" in data_purpose else dataset.batch(1)
-            dataset = dataset.batch(batch_size)
+            if "val" in data_purpose and val_batch_size is not None:
+                dataset = dataset.batch(val_batch_size, drop_remainder=True)
+            else:
+                dataset = dataset.batch(batch_size)
             datasets[data_purpose] = dataset
             del dataset
 
