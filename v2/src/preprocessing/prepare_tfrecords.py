@@ -42,7 +42,7 @@ def create_tfrecords(volume_name, records_name, save_data=True, save_record=True
         for view in ['axial', 'sagittal', 'coronal']:
             view_path = path + f'/{view}/'
             misc.mkdir(view_path)
-            if idx == 0: # Only the tfrecords folder contains these
+            if path == tfrecord_path: # Only the tfrecords folder contains these
                 misc.save_json(view_path + 'params.json', params)
                 for data_purpose in ['train', 'val']:
                     misc.mkdir(view_path + data_purpose)
@@ -90,7 +90,7 @@ def create_tfrecords(volume_name, records_name, save_data=True, save_record=True
 
         # Sagittal view
         sagittal_data = np.moveaxis(data, 1, 0)
-        if save_data: misc.save_nii(sagittal_data, data_path + f'/sagittal/{folder}/{folder}-label')
+        if save_data: misc.save_nii(sagittal_data, data_path + f'/sagittal/{folder}/{folder}-data')
 
         sagittal_label = np.moveaxis(label, 1, 0)
         if save_data: misc.save_nii(sagittal_label, data_path + f'/sagittal/{folder}/{folder}-label')

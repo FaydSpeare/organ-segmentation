@@ -2,6 +2,7 @@ import os
 import numpy as np
 import nibabel as nib
 import math
+from tqdm import tqdm
 
 from model.network import CDFNet
 from common import misc
@@ -27,7 +28,8 @@ def predict(model_folder, data_folder, prefix=''):
         sample = nib.load(f'{data_path}/{folder}/{folder}-data.nii').get_fdata()
 
         prediction = []
-        for batch in np.array_split(sample, 10):
+        for batch in tqdm(np.array_split(sample, 10)):
+            print('a')
             prediction.append(model.predict(batch))
 
         prediction = np.concatenate(prediction)
@@ -41,7 +43,11 @@ def predict(model_folder, data_folder, prefix=''):
 
         misc.save_nii(prediction, f'{data_path}/{folder}/{folder}-{prefix}-seg.nii')
 
+        return
+
 
 
 if __name__ == '__main__':
-    predict("(GDICE)-(3z-normal_coronal)-(Jan-29-201520)", '3z-normal/coronal', prefix='GDICE')
+    predict("(BDICE)-(3z-normal_axial)-(Jan-29-224423)", 'view-agg-data/axial', prefix='')
+    predict("(BDICE)-(3z-normal_sagittal)-(Jan-29-224553)", 'view-agg-data/sagittal', prefix='')
+    predict("(BDICE)-(3z-normal_coronal)-(Jan-29-224523)", 'view-agg-data/coronal', prefix='')
