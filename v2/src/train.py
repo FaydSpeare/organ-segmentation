@@ -9,9 +9,9 @@ def main():
 
     # Parameters for training
     parameters = p.default_parameters()
-    parameters[p.PREFIX]       = 'GDICE'
-    parameters[p.TFRECORDS]    = 'normalized/axial'
-    parameters[p.LOSS_FN]      =  Loss.GDICE
+    parameters[p.PREFIX]       = 'BDICE'
+    parameters[p.TFRECORDS]    = '3x_normal/axial'
+    parameters[p.LOSS_FN]      =  Loss.BDICE
     parameters[p.LR]           =  0.001
     parameters[p.NUM_CLASSES]  =  5
     parameters[p.OPTIMISER]    =  Optimiser.ADAM
