@@ -28,6 +28,10 @@ def get_tfrecords_path():
     return mkdir(get_base_path() + "/tfrecords")
 
 
+def get_chaos_path():
+    return get_base_path() + '/CHAOS'
+
+
 def get_data_path():
     return mkdir(get_base_path() + "/data")
 
@@ -63,5 +67,5 @@ def get_argmax_prediction(logits):
     return tf.cast(predictions[..., tf.newaxis], tf.float32)
 
 
-def save_nii(volume, path):
-    nib.Nifti1Image(volume, affine=np.eye(4)).to_filename(path)
+def save_nii(volume, path, affine=np.eye(4), header=None):
+    nib.Nifti1Image(volume, affine=affine, header=header).to_filename(path)
