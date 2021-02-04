@@ -68,7 +68,7 @@ def create_tfrecords(records_name, save_data=True, save_record=True):
         label = tf.expand_dims(label, axis=-1)
 
         # RESIZE DATA TO (144, 288, 288)
-        AX, SAG, COR = 144, 288, 288
+        AX, SAG, COR = 80, 288, 288
         data = np.moveaxis(data, 2, 0)
         label = np.moveaxis(label, 2, 0)
         data = tf.image.resize(data, [SAG, COR])
