@@ -19,7 +19,7 @@ def get_checkpoint_path():
 def new_checkpoint_path(prefix="_", tfr="_"):
     date = datetime.datetime.now().strftime("%b-%d-%H%M%S")
     tfr = tfr.replace('/', '_')
-    checkpoint_path = get_checkpoint_path() + f"/[{prefix}]-[{tfr}]-[{date}]/"
+    checkpoint_path = get_checkpoint_path() + f"/({prefix})-({tfr})-({date})/"
     os.mkdir(checkpoint_path)
     return checkpoint_path
 

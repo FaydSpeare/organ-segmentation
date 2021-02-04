@@ -6,7 +6,7 @@ import math
 from model.network import CDFNet
 from common import misc
 
-def predict(model_folder, data_folder):
+def predict(model_folder, data_folder, prefix=''):
 
     # Check the model and data folders
     data_path =  f'{misc.get_data_path()}/{data_folder}'
@@ -31,17 +31,17 @@ def predict(model_folder, data_folder):
             prediction.append(model.predict(batch))
 
         prediction = np.concatenate(prediction)
-        misc.save_nii(prediction, f'{data_path}/{folder}/{folder}-pred.nii')
+        misc.save_nii(prediction, f'{data_path}/{folder}/{folder}-{prefix}-pred.nii')
 
         # Collapse the probabilities into a one hot encoding then multiply and sum
         prediction = np.eye(prediction.shape[-1])[prediction.argmax(axis=-1)]
         num_classes = prediction.shape[-1]
         prediction *= [i * math.floor(255. / num_classes) for i in range(num_classes)]
-        prediction = np.sum(prediction, axis=-1)
+        prediction = np.sum(prediction, axis=-1).astype(np.int8)
 
-        misc.save_nii(prediction, f'{data_path}/{folder}/{folder}-seg.nii')
+        misc.save_nii(prediction, f'{data_path}/{folder}/{folder}-{prefix}-seg.nii')
 
 
 
 if __name__ == '__main__':
-    predict("GDICE-normalized_axial-ckp_20210129_155858", '3z-normal/axial')
+    predict("(GDICE)-(3z-normal_coronal)-(Jan-29-201520)", '3z-normal/coronal', prefix='GDICE')
