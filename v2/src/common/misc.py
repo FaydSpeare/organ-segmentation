@@ -29,7 +29,7 @@ def get_tfrecords_path():
 
 
 def get_chaos_path():
-    return get_base_path() + '/CHAOS'
+    return get_base_path() + '/../CHAOS'
 
 
 def get_data_path():
