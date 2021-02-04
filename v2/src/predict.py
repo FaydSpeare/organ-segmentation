@@ -27,7 +27,7 @@ def predict(model_folder, data_folder, prefix=''):
         sample = nib.load(f'{data_path}/{folder}/{folder}-data.nii').get_fdata()
 
         prediction = []
-        batches = np.array_split(sample, len(sample) // 10)
+        batches = np.array_split(sample, len(sample) // 40)
         for i, batch in enumerate(batches):
             print(f'{i}/{len(batches)}')
             prediction.append(model.predict(batch))
@@ -42,8 +42,6 @@ def predict(model_folder, data_folder, prefix=''):
         prediction = np.sum(prediction, axis=-1).astype(np.int8)
 
         misc.save_nii(prediction, f'{data_path}/{folder}/{folder}-{prefix}-seg.nii')
-
-        return
 
 
 
