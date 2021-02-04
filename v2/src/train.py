@@ -46,7 +46,7 @@ def main():
             break
 
     # Run predictions for dataset
-    model_folder = parameters[p.MODEL_PATH].split('/')[-1]
+    model_folder = parameters[p.MODEL_PATH].split('/')[-2]
     predict(model_folder, parameters[p.TFRECORDS], prefix=parameters[p.PREFIX])
 
 if __name__ == '__main__':

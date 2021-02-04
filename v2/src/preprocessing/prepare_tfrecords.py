@@ -60,6 +60,8 @@ def create_tfrecords(records_name, save_data=True, save_record=True):
         in_phase = in_phase_raw.get_fdata()
         out_phase = nib.load(f'{chaos_folder}/{folder}/OutPhase.nii').get_fdata()
         combined = np.stack([in_phase, out_phase], axis=-1)
+
+        # Normalize data
         mean, std = np.mean(combined, axis=(0, 1, 2)), np.std(combined, axis=(0, 1, 2))
         data = (combined -  mean) / (std * 3)
 
