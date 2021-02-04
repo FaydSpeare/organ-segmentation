@@ -23,7 +23,7 @@ def create_tfrecords(records_name, save_data=True, save_record=True):
     if save_data: misc.mkdir(data_path)
 
     tfrm = TFRecordsManager()
-    total_samples = len(os.listdir('/home/fayd/Data/CHAOS'))
+    total_samples = len(os.listdir(chaos_folder))
     split = math.floor(0.8 * total_samples)
     params = {
         'data_purposes': ['train', 'val'],
