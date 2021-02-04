@@ -3,7 +3,7 @@ from tensorflow.keras.layers import Conv3D, BatchNormalization, Softmax
 
 class ViewAggregation(tf.keras.layers.Layer):
 
-    def __init__(self, num_filters, num_classes):
+    def __init__(self, num_filters=30, num_classes=5):
         super(ViewAggregation, self).__init__()
 
         self.batch_norm1 = BatchNormalization()
@@ -30,7 +30,7 @@ class ViewAggregation(tf.keras.layers.Layer):
     def plot_summary(self, input_shape):
         x = tf.keras.Input(shape=input_shape)
         model = tf.keras.Model(inputs=[x], outputs=self.call(x, training=False))
-        tf.keras.utils.plot_model(model, to_file='VAB.png', show_shapes=True, expand_nested=True)
+        #tf.keras.utils.plot_model(model, to_file='VAB.png', show_shapes=True, expand_nested=True)
         model.summary(line_length=200)
 
 

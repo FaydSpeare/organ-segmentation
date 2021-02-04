@@ -7,7 +7,7 @@ from model.blocks.competitive_unpool_block import CompUnpoolBlock
 
 class CDFNet(tf.keras.models.Model):
 
-    def __init__(self, num_filters=64, num_classes=44):
+    def __init__(self, num_filters=64, num_classes=5):
         super(CDFNet, self).__init__()
 
         self.cdb_encoder1 = CompDenseBlock(num_filters, is_input_block=True)

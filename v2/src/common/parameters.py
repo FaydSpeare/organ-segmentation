@@ -12,6 +12,7 @@ LR = 'learning_rate'
 TRAIN_BATCH = 'batch_size'
 VAL_BATCH = 'val_batch_size'
 PATIENCE = 'patience'
+NETWORK = 'network'
 
 def default_parameters():
     return {

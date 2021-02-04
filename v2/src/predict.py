@@ -2,7 +2,6 @@ import os
 import numpy as np
 import nibabel as nib
 import math
-from tqdm import tqdm
 
 from model.network import CDFNet
 from common import misc
@@ -28,8 +27,9 @@ def predict(model_folder, data_folder, prefix=''):
         sample = nib.load(f'{data_path}/{folder}/{folder}-data.nii').get_fdata()
 
         prediction = []
-        for batch in tqdm(np.array_split(sample, 10)):
-            print('a')
+        batches = np.array_split(sample, len(sample) // 10)
+        for i, batch in enumerate(batches):
+            print(f'{i}/{len(batches)}')
             prediction.append(model.predict(batch))
 
         prediction = np.concatenate(prediction)

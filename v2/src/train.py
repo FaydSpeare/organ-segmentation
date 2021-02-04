@@ -1,9 +1,9 @@
 from common.tfrecords import TFRecordsManager
 from model.solver import Solver
-from model.network import CDFNet
+from model.network import CDFNet, ViewAggregation
 from common import misc, Optimiser, Loss
 import common.parameters as p
-
+from predict import predict
 
 def main():
 
@@ -18,6 +18,8 @@ def main():
     parameters[p.TRAIN_BATCH]  =  10
     parameters[p.VAL_BATCH]    =  27
     parameters[p.PATIENCE]     =  50
+    parameters[p.NETWORK]      =  CDFNet
+    #parameters[p.NETWORK]      =  ViewAggregation
     p.validate(parameters)
 
     # Create folder for the new model
@@ -28,7 +30,7 @@ def main():
     tfrecord_path = misc.get_tfrecords_path() + f"/{parameters[p.TFRECORDS]}/"
     dataset = tfrm.load_datasets(tfrecord_path, parameters[p.TRAIN_BATCH], parameters[p.VAL_BATCH])
 
-    network = CDFNet(num_filters=64, num_classes=parameters[p.NUM_CLASSES])
+    network = parameters[p.NETWORK](num_classes=parameters[p.NUM_CLASSES])
     solver = Solver(network, parameters)
     epoch_metrics = dict()
 
@@ -43,6 +45,9 @@ def main():
         if solver.early_stopping_tick > parameters[p.PATIENCE]:
             break
 
+    # Run predictions for dataset
+    model_folder = parameters[p.MODEL_PATH].split('/')[-1]
+    predict(model_folder, parameters[p.TFRECORDS], prefix=parameters[p.PREFIX])
 
 if __name__ == '__main__':
     main()
