@@ -32,7 +32,7 @@ def combine(data_folder, prefixes):
         data['axial'] = np.moveaxis(data['axial'], 0, 2)
         data['sagittal'] = np.moveaxis(data['sagittal'], 0, 1)
 
-        combined_volume = np.concatenate(list(data.values()), axis=-1)
+        combined_volume = np.stack([data['axial'], data['sagittal'], data['coronal']], axis=-1)
 
         misc.mkdir(f'{combined_path}/{folder}/')
         misc.save_nii(combined_volume, f'{combined_path}/{folder}/{folder}-3pred.nii')

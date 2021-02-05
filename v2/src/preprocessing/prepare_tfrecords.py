@@ -134,7 +134,7 @@ def create_van_tfrecords(data_folder, patches_per_sample=50, patch_size=(50, 50,
             'sagittal': 'BDICE',
             'coronal': 'BDICE'
         }
-        combine_preds.combine('3x_normal', view_prefixes)
+        combine_preds.combine(data_folder, view_prefixes)
 
     tfrecord_path = misc.mkdir(f'{misc.get_tfrecords_path()}/{data_folder}')
     os.mkdir(f'{misc.get_tfrecords_path()}/{data_folder}/combined')
