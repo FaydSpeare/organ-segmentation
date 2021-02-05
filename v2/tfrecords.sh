@@ -20,4 +20,3 @@ python3.7 -m pip install --user nibabel
 cd src
 srun -n 1 python3 -m preprocessing.prepare_tfrecords
 
-

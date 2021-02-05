@@ -3,6 +3,7 @@ import nibabel as nib
 import numpy as np
 import math
 import tensorflow as tf
+import random
 
 from common.tfrecords import TFRecordsManager
 from common import misc
@@ -13,7 +14,7 @@ def resize_label(label, size, alpha=63.0):
     return tf.round(tf.image.resize(label, size, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR) / alpha) * alpha
 
 
-def create_tfrecords(records_name, save_data=True, save_record=True):
+def create_cdf_tfrecords(records_name, save_data=True, save_record=True):
 
     # Create new folders for data
     chaos_folder = misc.get_chaos_path()
@@ -122,6 +123,61 @@ def create_tfrecords(records_name, save_data=True, save_record=True):
         print('\n')
 
 
+def create_van_tfrecords(data_folder, patches_per_sample=50, patch_size=(50, 50, 50)):
+
+    data_path = f'{misc.get_data_path()}/{data_folder}/combined'
+    assert os.path.exists(data_path)
+
+    tfrecord_path = misc.mkdir(f'{misc.get_tfrecords_path()}/{data_folder}')
+    os.mkdir(f'{misc.get_tfrecords_path()}/{data_folder}/combined')
+    for data_purpose in ['train', 'val']:
+        os.mkdir(f'{misc.get_tfrecords_path()}/{data_folder}/combined/{data_purpose}')
+
+    tfrm = TFRecordsManager()
+    total_samples = len(os.listdir(data_path))
+    split = math.floor(0.8 * total_samples)
+
+    # Save tfrecord params
+    misc.save_json(f'{misc.get_tfrecords_path()}/{data_folder}/combined/params.json', {
+        'data_purposes': ['train', 'val'],
+        'data_keys': {
+            'X': 'float32',
+            'Y': 'float32'
+        }
+    })
+
+    for idx, folder in enumerate(os.listdir(data_path)):
+        print(f'Creating TFRecord for folder: [{folder}]')
+        data_purpose = 'train' if idx <= split else 'val'
+
+        #data = nib.load(f'{data_path}/{folder}/{folder}-3pred.nii').get_fdata()
+        #label = nib.load(f'{data_path}/{folder}/{folder}-label.nii').get_fdata()
+
+        data = tf.ones((100, 100, 100, 10))
+        label = tf.ones((100, 100, 100))
+
+        sample = []
+
+        for i in range(patches_per_sample):
+
+            x_start = random.randint(0, data.shape[0] - patch_size[0])
+            y_start = random.randint(0, data.shape[1] - patch_size[1])
+            z_start = random.randint(0, data.shape[2] - patch_size[2])
+
+            x_finish = x_start + patch_size[0]
+            y_finish = y_start + patch_size[1]
+            z_finish = z_start + patch_size[2]
+
+            patch_data = data[x_start:x_finish, y_start:y_finish, z_start:z_finish, :]
+            patch_label = label[x_start:x_finish, y_start:y_finish, z_start:z_finish]
+
+            sample.append({'X' : patch_data, 'Y': patch_label})
+
+        tfrm.save_record(tfrecord_path + f'/combined/{data_purpose}/{folder}', sample)
+
+
+
 
 if __name__ == '__main__':
-    create_tfrecords('3x_normal')
+    #create_cdf_tfrecords('3x_normal')
+    create_van_tfrecords('3x_normal')
