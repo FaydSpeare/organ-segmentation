@@ -18,7 +18,9 @@ def combine(data_folder, prefixes):
     # Check all the predictions are present
     for view in VIEWS:
         view_path = f'{data_path}/{view}'
-        assert all(os.path.exists(f'{view_path}/{f}/{f}-{prefixes[view]}-pred.nii') for f in os.listdir(view_path))
+        if not all(os.path.exists(f'{view_path}/{f}/{f}-{prefixes[view]}-pred.nii') for f in os.listdir(view_path)):
+            print(f'predictions missing for some samples in the {view} view.')
+            exit(3)
 
     combined_path = misc.mkdir(f'{data_path}/combined/')
 

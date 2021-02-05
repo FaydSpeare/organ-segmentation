@@ -7,6 +7,7 @@ import random
 
 from common.tfrecords import TFRecordsManager
 from common import misc
+from preprocessing import combine_preds
 
 
 
@@ -126,7 +127,14 @@ def create_cdf_tfrecords(records_name, save_data=True, save_record=True):
 def create_van_tfrecords(data_folder, patches_per_sample=50, patch_size=(50, 50, 50)):
 
     data_path = f'{misc.get_data_path()}/{data_folder}/combined'
-    assert os.path.exists(data_path)
+    if not os.path.exists(data_path):
+        print(f'Combining axial, sagittal and coronal view for: {data_folder}')
+        view_prefixes = {
+            'axial': 'BDICE',
+            'sagittal': 'BDICE',
+            'coronal': 'BDICE'
+        }
+        combine_preds.combine('3x_normal', view_prefixes)
 
     tfrecord_path = misc.mkdir(f'{misc.get_tfrecords_path()}/{data_folder}')
     os.mkdir(f'{misc.get_tfrecords_path()}/{data_folder}/combined')
