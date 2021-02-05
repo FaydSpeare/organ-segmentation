@@ -29,7 +29,7 @@ def combine(data_folder, prefixes):
         data = {view: nib.load(f'{data_path}/{view}/{folder}/{folder}-{prefixes[view]}-pred.nii').get_fdata() for view in VIEWS}
         label = nib.load(f'{data_path}/coronal/{folder}/{folder}-label.nii')
 
-        data['axial'] = np.moveaxis(data['sagittal'], 0, 2)
+        data['axial'] = np.moveaxis(data['axial'], 0, 2)
         data['sagittal'] = np.moveaxis(data['sagittal'], 0, 1)
 
         combined_volume = np.concatenate(list(data.values()), axis=-1)
