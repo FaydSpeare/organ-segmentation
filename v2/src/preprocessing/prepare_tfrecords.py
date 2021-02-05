@@ -189,8 +189,8 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
 
 if __name__ == '__main__':
     #create_cdf_tfrecords('3x_normal')
-    create_van_tfrecords('view-agg-data', {
-        'axial': '',
-        'sagittal': '',
-        'coronal': ''
-    }, patches_per_sample=10)
+    create_van_tfrecords('3x_normal', {
+        'axial': 'BDICE',
+        'sagittal': 'BDICE',
+        'coronal': 'BDICE'
+    }, patches_per_sample=50)
