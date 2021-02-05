@@ -159,7 +159,7 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
         data = {view: nib.load(f'{data_path}/{view}/{folder}/{folder}-{prefixes[view]}-pred.nii').get_fdata() for view in VIEWS}
         data['axial'] = np.moveaxis(data['axial'], 0, 2)
         data['sagittal'] = np.moveaxis(data['sagittal'], 0, 1)
-        label = nib.load(f'{data_path}/coronal/{folder}/{folder}-label.nii')
+        label = nib.load(f'{data_path}/coronal/{folder}/{folder}-label.nii').get_fdata()
 
         #data = tf.ones((100, 100, 100, 10))
         #label = tf.ones((100, 100, 100))
