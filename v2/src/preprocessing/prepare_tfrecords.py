@@ -150,7 +150,7 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
     })
 
     for idx, folder in enumerate(os.listdir(f'{data_path}/axial')):
-        print(f'Creating TFRecord for folder: [{folder}]')
+        print(f'Creating TFRecord for folder: [{folder}]', flush=True)
         data_purpose = 'train' if idx <= split else 'val'
 
         #data = nib.load(f'{data_path}/{folder}/{folder}-3pred.nii').get_fdata()
