@@ -160,6 +160,7 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
         data['axial'] = np.moveaxis(data['axial'], 0, 2)
         data['sagittal'] = np.moveaxis(data['sagittal'], 0, 1)
         label = nib.load(f'{data_path}/coronal/{folder}/{folder}-label.nii').get_fdata()
+        label = label.astype(np.float32) / 63.0
 
         #data = tf.ones((100, 100, 100, 10))
         #label = tf.ones((100, 100, 100))
