@@ -17,4 +17,5 @@ source activate /opt/ohpc/pub/apps/tensorflow_2.0.0
 python3.7 -m pip install --user scikit-image
 python3.7 -m pip install --user nibabel
 
+# gpu:tesla-smx2:1
 srun -n 1 python3 src/train.py
