@@ -193,4 +193,4 @@ if __name__ == '__main__':
         'axial': 'BDICE',
         'sagittal': 'BDICE',
         'coronal': 'BDICE'
-    }, patches_per_sample=50)
+    }, patches_per_sample=100, patch_size=(100, 100, 80))

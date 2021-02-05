@@ -15,7 +15,7 @@ def main():
     parameters[p.LR]           =  0.001
     parameters[p.NUM_CLASSES]  =  5
     parameters[p.OPTIMISER]    =  Optimiser.ADAM
-    parameters[p.TRAIN_BATCH]  =  10
+    parameters[p.TRAIN_BATCH]  =  2
     parameters[p.VAL_BATCH]    =  10
     parameters[p.PATIENCE]     =  10
     #parameters[p.NETWORK]      =  CDFNet
