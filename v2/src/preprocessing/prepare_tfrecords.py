@@ -129,7 +129,7 @@ VIEWS = ['axial', 'sagittal', 'coronal']
 
 def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_size=(50, 50, 50)):
 
-    data_path = misc.mkdir(f'{misc.get_data_path()}/{data_folder}/combined')
+    data_path = f'{misc.get_data_path()}/{data_folder}'
 
     tfrecord_path = misc.mkdir(f'{misc.get_tfrecords_path()}/{data_folder}')
     os.mkdir(f'{misc.get_tfrecords_path()}/{data_folder}/combined')
@@ -137,7 +137,7 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
         os.mkdir(f'{misc.get_tfrecords_path()}/{data_folder}/combined/{data_purpose}')
 
     tfrm = TFRecordsManager()
-    total_samples = len(os.listdir(data_path))
+    total_samples = len(os.listdir(f'{data_path}/axial'))
     split = math.floor(0.8 * total_samples)
 
     # Save tfrecord params
@@ -149,7 +149,7 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
         }
     })
 
-    for idx, folder in enumerate(os.listdir(data_path)):
+    for idx, folder in enumerate(os.listdir(f'{data_path}/axial')):
         print(f'Creating TFRecord for folder: [{folder}]')
         data_purpose = 'train' if idx <= split else 'val'
 
