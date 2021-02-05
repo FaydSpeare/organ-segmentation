@@ -1,7 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Conv3D, BatchNormalization, Softmax
 
-class ViewAggregation(tf.keras.layers.Layer):
+class ViewAggregation(tf.keras.models.Model):
 
     def __init__(self, num_filters=30, num_classes=5):
         super(ViewAggregation, self).__init__()

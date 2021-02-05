@@ -10,7 +10,7 @@ def main():
     # Parameters for training
     parameters = p.default_parameters()
     parameters[p.PREFIX]       = 'VAN'
-    parameters[p.TFRECORDS]    = '3x_normal/combined'
+    parameters[p.TFRECORDS]    = 'view-agg-data/combined'
     parameters[p.LOSS_FN]      =  Loss.BDICE
     parameters[p.LR]           =  0.001
     parameters[p.NUM_CLASSES]  =  5

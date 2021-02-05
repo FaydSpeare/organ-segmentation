@@ -179,7 +179,7 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
 
             patch_data = {view: data[view][x_start:x_finish, y_start:y_finish, z_start:z_finish, :] for view in VIEWS}
             patch_label = label[x_start:x_finish, y_start:y_finish, z_start:z_finish]
-            patch_data = np.stack([patch_data['axial'], patch_data['sagittal'], patch_data['coronal']], axis=-1)
+            patch_data = np.concatenate([patch_data['axial'], patch_data['sagittal'], patch_data['coronal']], axis=-1).astype(np.float32)
             sample.append({'X' : patch_data, 'Y': patch_label})
 
         tfrm.save_record(tfrecord_path + f'/combined/{data_purpose}/{folder}', sample)
@@ -189,8 +189,8 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
 
 if __name__ == '__main__':
     #create_cdf_tfrecords('3x_normal')
-    create_van_tfrecords('3x_normal', {
-        'axial': 'BDICE',
-        'sagittal': 'BDICE',
-        'coronal': 'BDICE'
-    })
+    create_van_tfrecords('view-agg-data', {
+        'axial': '',
+        'sagittal': '',
+        'coronal': ''
+    }, patches_per_sample=10)
