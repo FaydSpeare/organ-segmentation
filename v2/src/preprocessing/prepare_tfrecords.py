@@ -124,17 +124,12 @@ def create_cdf_tfrecords(records_name, save_data=True, save_record=True):
         print('\n')
 
 
-def create_van_tfrecords(data_folder, patches_per_sample=50, patch_size=(50, 50, 50)):
+VIEWS = ['axial', 'sagittal', 'coronal']
 
-    data_path = f'{misc.get_data_path()}/{data_folder}/combined'
-    if not os.path.exists(data_path):
-        print(f'Combining axial, sagittal and coronal view for: {data_folder}')
-        view_prefixes = {
-            'axial': 'BDICE',
-            'sagittal': 'BDICE',
-            'coronal': 'BDICE'
-        }
-        combine_preds.combine(data_folder, view_prefixes)
+
+def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_size=(50, 50, 50)):
+
+    data_path = misc.mkdir(f'{misc.get_data_path()}/{data_folder}/combined')
 
     tfrecord_path = misc.mkdir(f'{misc.get_tfrecords_path()}/{data_folder}')
     os.mkdir(f'{misc.get_tfrecords_path()}/{data_folder}/combined')
@@ -161,24 +156,29 @@ def create_van_tfrecords(data_folder, patches_per_sample=50, patch_size=(50, 50,
         #data = nib.load(f'{data_path}/{folder}/{folder}-3pred.nii').get_fdata()
         #label = nib.load(f'{data_path}/{folder}/{folder}-label.nii').get_fdata()
 
-        data = tf.ones((100, 100, 100, 10))
-        label = tf.ones((100, 100, 100))
+        data = {view: nib.load(f'{data_path}/{view}/{folder}/{folder}-{prefixes[view]}-pred.nii').get_fdata() for view in VIEWS}
+        data['axial'] = np.moveaxis(data['axial'], 0, 2)
+        data['sagittal'] = np.moveaxis(data['sagittal'], 0, 1)
+        label = nib.load(f'{data_path}/coronal/{folder}/{folder}-label.nii')
+
+        #data = tf.ones((100, 100, 100, 10))
+        #label = tf.ones((100, 100, 100))
 
         sample = []
 
         for i in range(patches_per_sample):
 
-            x_start = random.randint(0, data.shape[0] - patch_size[0])
-            y_start = random.randint(0, data.shape[1] - patch_size[1])
-            z_start = random.randint(0, data.shape[2] - patch_size[2])
+            x_start = random.randint(0, data['axial'].shape[0] - patch_size[0])
+            y_start = random.randint(0, data['axial'].shape[1] - patch_size[1])
+            z_start = random.randint(0, data['axial'].shape[2] - patch_size[2])
 
             x_finish = x_start + patch_size[0]
             y_finish = y_start + patch_size[1]
             z_finish = z_start + patch_size[2]
 
-            patch_data = data[x_start:x_finish, y_start:y_finish, z_start:z_finish, :]
+            patch_data = {view: data[view][x_start:x_finish, y_start:y_finish, z_start:z_finish, :] for view in VIEWS}
             patch_label = label[x_start:x_finish, y_start:y_finish, z_start:z_finish]
-
+            patch_data = np.stack([patch_data['axial'], patch_data['sagittal'], patch_data['coronal']], axis=-1)
             sample.append({'X' : patch_data, 'Y': patch_label})
 
         tfrm.save_record(tfrecord_path + f'/combined/{data_purpose}/{folder}', sample)
@@ -188,4 +188,8 @@ def create_van_tfrecords(data_folder, patches_per_sample=50, patch_size=(50, 50,
 
 if __name__ == '__main__':
     #create_cdf_tfrecords('3x_normal')
-    create_van_tfrecords('3x_normal')
+    create_van_tfrecords('3x_normal', {
+        'axial': 'BDICE',
+        'sagittal': 'BDICE',
+        'coronal': 'BDICE'
+    })
