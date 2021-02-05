@@ -132,9 +132,9 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
     data_path = f'{misc.get_data_path()}/{data_folder}'
 
     tfrecord_path = misc.mkdir(f'{misc.get_tfrecords_path()}/{data_folder}')
-    os.mkdir(f'{misc.get_tfrecords_path()}/{data_folder}/combined')
+    misc.mkdir(f'{misc.get_tfrecords_path()}/{data_folder}/combined')
     for data_purpose in ['train', 'val']:
-        os.mkdir(f'{misc.get_tfrecords_path()}/{data_folder}/combined/{data_purpose}')
+        misc.mkdir(f'{misc.get_tfrecords_path()}/{data_folder}/combined/{data_purpose}')
 
     tfrm = TFRecordsManager()
     total_samples = len(os.listdir(f'{data_path}/axial'))
