@@ -1,14 +1,14 @@
 import tensorflow as tf
-from tensorflow.keras.layers import Conv3D, BatchNormalization, Softmax
+from tensorflow.keras.layers import Conv3D, BatchNormalization, Softmax, ReLU
 
 class ViewAggregation(tf.keras.models.Model):
 
     def __init__(self, num_filters=30, num_classes=5):
         super(ViewAggregation, self).__init__()
 
-        self.batch_norm1 = BatchNormalization()
         self.conv1 = Conv3D(filters=num_filters, kernel_size=3, padding='same')
-        self.batch_norm2 = BatchNormalization()
+        self.batch_norm1 = BatchNormalization()
+        self.relu1 = ReLU()
         self.conv2 = Conv3D(filters=num_classes, kernel_size=1, padding='same')
         self.softmax = Softmax()
 
@@ -16,9 +16,9 @@ class ViewAggregation(tf.keras.models.Model):
     def call(self, input_tensor, training=None, mask=None):
 
         x = input_tensor
-        x = self.batch_norm1(x)
         x = self.conv1(x)
-        x = self.batch_norm2(x)
+        x = self.batch_norm1(x)
+        x = self.relu1(x)
         x = self.conv2(x)
         x = self.softmax(x)
 
