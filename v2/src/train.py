@@ -9,7 +9,7 @@ def main():
 
     # Parameters for training
     parameters = p.default_parameters()
-    parameters[p.PREFIX]       = 'BDICE_new_arch'
+    parameters[p.PREFIX]       = 'BDICE_2'
     parameters[p.TFRECORDS]    = '3x_normal/axial'
     parameters[p.LOSS_FN]      =  Loss.BDICE
     parameters[p.LR]           =  0.001
