@@ -7,38 +7,38 @@ from model.blocks.competitive_unpool_block import CompUnpoolBlock
 
 class CDFNet(tf.keras.models.Model):
 
-    def __init__(self, num_filters=64, num_classes=5, dropout=None):
+    def __init__(self, num_filters=64, num_classes=5):
         super(CDFNet, self).__init__()
 
-        self.cdb_encoder1 = CompDenseBlock(num_filters, is_input_block=True, dropout_rate=dropout)
+        self.cdb_encoder1 = CompDenseBlock(num_filters, is_input_block=True)
         self.max_pool1 = MaxPool2D()
 
-        self.cdb_encoder2 = CompDenseBlock(num_filters, dropout_rate=dropout)
+        self.cdb_encoder2 = CompDenseBlock(num_filters)
         self.max_pool2 = MaxPool2D()
 
-        self.cdb_encoder3 = CompDenseBlock(num_filters, dropout_rate=dropout)
+        self.cdb_encoder3 = CompDenseBlock(num_filters)
         self.max_pool3 = MaxPool2D()
 
-        self.cdb_encoder4 = CompDenseBlock(num_filters, dropout_rate=dropout)
+        self.cdb_encoder4 = CompDenseBlock(num_filters)
         self.max_pool4 = MaxPool2D()
 
-        self.bottleneck = CompDenseBlock(num_filters, dropout_rate=dropout)
+        self.bottleneck = CompDenseBlock(num_filters)
 
         self.up_sample4 = Conv2DTranspose(num_filters, kernel_size=2, strides=(2, 2), padding='same')
         self.cub4 = CompUnpoolBlock(num_filters)
-        self.cdb_decoder4 = CompDenseBlock(num_filters, dropout_rate=dropout)
+        self.cdb_decoder4 = CompDenseBlock(num_filters)
 
         self.up_sample3 = Conv2DTranspose(num_filters, kernel_size=2, strides=(2, 2), padding='same')
         self.cub3 = CompUnpoolBlock(num_filters)
-        self.cdb_decoder3 = CompDenseBlock(num_filters, dropout_rate=dropout)
+        self.cdb_decoder3 = CompDenseBlock(num_filters)
 
         self.up_sample2 = Conv2DTranspose(num_filters, kernel_size=2, strides=(2, 2), padding='same')
         self.cub2 = CompUnpoolBlock(num_filters)
-        self.cdb_decoder2 = CompDenseBlock(num_filters, dropout_rate=dropout)
+        self.cdb_decoder2 = CompDenseBlock(num_filters)
 
         self.up_sample1 = Conv2DTranspose(num_filters, kernel_size=2, strides=(2, 2), padding='same')
         self.cub1 = CompUnpoolBlock(num_filters)
-        self.cdb_decoder1 = CompDenseBlock(num_filters, dropout_rate=dropout)
+        self.cdb_decoder1 = CompDenseBlock(num_filters)
 
         self.final_conv = Conv2D(num_classes, kernel_size=1)
         self.softmax = Softmax()

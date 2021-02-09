@@ -26,13 +26,12 @@ class CompUnpoolBlock(tf.keras.layers.Layer):
         skip_input = inputs[1]
 
         x = self.concat1([main_input, skip_input])
-        x = self.relu(x)
+
         x = self.conv(x)
         x = self.batch_norm1(x, training=training)
+        x = self.relu(x)
 
-        skip_bn = self.batch_norm2(skip_input, training=training)
-
-        x = self.max_out([x, skip_bn])
+        x = self.max_out([x, skip_input])
         return x
 
     def get_config(self):
