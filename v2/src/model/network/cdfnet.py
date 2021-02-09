@@ -64,19 +64,19 @@ class CDFNet(tf.keras.models.Model):
         x = self.bottleneck(x, training=training)
 
         x = self.up_sample4(x)
-        x = self.cub4([x, encoder4])
+        x = self.cub4([x, encoder4], training=training)
         x = self.cdb_decoder4(x, training=training)
 
         x = self.up_sample3(x)
-        x = self.cub3([x, encoder3])
+        x = self.cub3([x, encoder3], training=training)
         x = self.cdb_decoder3(x, training=training)
 
         x = self.up_sample2(x)
-        x = self.cub2([x, encoder2])
+        x = self.cub2([x, encoder2], training=training)
         x = self.cdb_decoder2(x, training=training)
 
         x = self.up_sample1(x)
-        x = self.cub1([x, encoder1])
+        x = self.cub1([x, encoder1], training=training)
         x = self.cdb_decoder1(x, training=training)
 
         x = self.final_conv(x)

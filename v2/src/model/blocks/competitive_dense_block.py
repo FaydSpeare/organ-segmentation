@@ -30,15 +30,15 @@ class CompDenseBlock(tf.keras.layers.Layer):
         if self.dropout_rate is not None:
             self.dropout = Dropout(rate=self.dropout_rate)
 
-    def call(self, input_tensor, training=None, mask=None):
+    def call(self, input_tensor, training=None):
 
         x = input_tensor
-        x = self.batch_norm11(x)
+        x = self.batch_norm11(x, training=training)
         concat = x
 
         x = self.relu1(x)
         x = self.conv1(x)
-        x = self.batch_norm12(x)
+        x = self.batch_norm12(x, training=training)
 
         if self.is_input_block:
             concat = x
@@ -50,7 +50,7 @@ class CompDenseBlock(tf.keras.layers.Layer):
 
         x = self.relu2(x)
         x = self.conv2(x)
-        x = self.batch_norm2(x)
+        x = self.batch_norm2(x, training=training)
 
         x = self.max_out2([x, concat])
 

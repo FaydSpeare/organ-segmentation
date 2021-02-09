@@ -17,7 +17,7 @@ class ViewAggregation(tf.keras.models.Model):
 
         x = input_tensor
         x = self.conv1(x)
-        x = self.batch_norm1(x)
+        x = self.batch_norm1(x, training=training)
         x = self.relu1(x)
         x = self.conv2(x)
         x = self.softmax(x)
