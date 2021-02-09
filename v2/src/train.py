@@ -45,7 +45,7 @@ def main():
         if solver.early_stopping_tick > parameters[p.PATIENCE]:
             break
 
-    if type(parameters[p.NETWORK]) == CDFNet:
+    if type(parameters[p.NETWORK]()) == CDFNet:
         # Run predictions for dataset
         model_folder = parameters[p.MODEL_PATH].split('/')[-2]
         predict(model_folder, parameters[p.TFRECORDS], prefix=parameters[p.PREFIX])
