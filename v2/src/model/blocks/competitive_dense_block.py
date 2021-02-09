@@ -32,7 +32,7 @@ class CompDenseBlock(tf.keras.layers.Layer):
         concat = x
 
         x = self.conv1(x)
-        x = self.batch_norm11(x, training=training)
+        x = self.batch_norm1(x, training=training)
         x = self.relu1(x)
 
         if self.is_input_block:
