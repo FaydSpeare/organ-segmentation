@@ -190,7 +190,7 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
 if __name__ == '__main__':
     #create_cdf_tfrecords('3x_normal')
     create_van_tfrecords('3x_normal', {
-        'axial': 'BDICE',
-        'sagittal': 'BDICE',
-        'coronal': 'BDICE'
-    }, patches_per_sample=100, patch_size=(100, 100, 80))
+        'axial': 'BDICE_2',
+        'sagittal': 'BDICE_2',
+        'coronal': 'BDICE_2'
+    }, patches_per_sample=50, patch_size=(140, 140, 40))
