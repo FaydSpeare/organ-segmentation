@@ -194,7 +194,7 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
             patch_label = label[x_start:x_finish, y_start:y_finish, z_start:z_finish]
 
             # TODO temp fix labels
-            patch_label = np.ceil(patch_label)
+            patch_label = np.ceil(patch_label - 0.2)
 
             patch_data = np.concatenate([patch_data['axial'], patch_data['sagittal'], patch_data['coronal']], axis=-1).astype(np.float32)
             sample.append({'X' : patch_data, 'Y': patch_label})
