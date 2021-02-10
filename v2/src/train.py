@@ -9,14 +9,14 @@ def main():
 
     # Parameters for training
     parameters = p.default_parameters()
-    parameters[p.PREFIX]       = 'G-VAN_2'
+    parameters[p.PREFIX]       = 'B-VAN_3'
     parameters[p.TFRECORDS]    = '3x_normal/combined'
-    parameters[p.LOSS_FN]      =  Loss.GDICE
+    parameters[p.LOSS_FN]      =  Loss.BDICE
     parameters[p.LR]           =  0.001
     parameters[p.NUM_CLASSES]  =  5
     parameters[p.OPTIMISER]    =  Optimiser.ADAM
-    parameters[p.TRAIN_BATCH]  =  5
-    parameters[p.VAL_BATCH]    =  10
+    parameters[p.TRAIN_BATCH]  =  8
+    parameters[p.VAL_BATCH]    =  16
     parameters[p.PATIENCE]     =  20
     #parameters[p.NETWORK]      =  CDFNet
     parameters[p.NETWORK]      =  ViewAggregation
