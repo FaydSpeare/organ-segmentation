@@ -6,7 +6,7 @@ import math
 from model.network import CDFNet
 from common import misc
 
-def predict(model_folder, data_folder, prefix=''):
+def predict(model_folder, data_folder, prefix='', batch_size=10):
 
     # Check the model and data folders
     data_path =  f'{misc.get_data_path()}/{data_folder}'
@@ -27,7 +27,7 @@ def predict(model_folder, data_folder, prefix=''):
         sample = nib.load(f'{data_path}/{folder}/{folder}-data.nii').get_fdata()
 
         prediction = []
-        batches = np.array_split(sample, len(sample) // 40)
+        batches = np.array_split(sample, len(sample) // batch_size)
         for i, batch in enumerate(batches):
             print(f'{i}/{len(batches)}')
             prediction.append(model.predict(batch))
@@ -46,6 +46,6 @@ def predict(model_folder, data_folder, prefix=''):
 
 
 if __name__ == '__main__':
-    predict("(BDICE)-(3z-normal_axial)-(Jan-29-224423)", 'view-agg-data/axial', prefix='')
-    predict("(BDICE)-(3z-normal_sagittal)-(Jan-29-224553)", 'view-agg-data/sagittal', prefix='')
-    predict("(BDICE)-(3z-normal_coronal)-(Jan-29-224523)", 'view-agg-data/coronal', prefix='')
+    #predict("(BDICE_2)-(3x_normal_axial)-(Feb-10-012355)", 'unlabelled_2/axial', prefix='')
+    predict("(BDICE_2)-(3x_normal_coronal)-(Feb-10-012444)", 'unlabelled_2/coronal', prefix='')
+    predict("(BDICE_2)-(3x_normal_sagittal)-(Feb-10-012517)", 'unlabelled_2/sagittal', prefix='')

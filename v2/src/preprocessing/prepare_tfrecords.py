@@ -19,6 +19,7 @@ def create_cdf_tfrecords(records_name, save_data=True, save_record=True):
 
     # Create new folders for data
     chaos_folder = misc.get_chaos_path()
+    #chaos_folder = misc.get_base_path() + '/../Unlabelled'
     tfrecord_path = misc.get_tfrecords_path() + f'/{records_name}'
     data_path = misc.get_data_path() + f'/{records_name}'
     if save_record: misc.mkdir(tfrecord_path)
@@ -67,59 +68,69 @@ def create_cdf_tfrecords(records_name, save_data=True, save_record=True):
         mean, std = np.mean(combined, axis=(0, 1, 2)), np.std(combined, axis=(0, 1, 2))
         data = (combined -  mean) / (std * 3)
 
-        label_raw = nib.load(f'{chaos_folder}/{folder}/ground.nii')
-        label = label_raw.get_fdata()
-        label = tf.expand_dims(label, axis=-1)
-
         # RESIZE DATA TO (144, 288, 288)
         AX, SAG, COR = 80, 288, 288
         data = np.moveaxis(data, 2, 0)
-        label = np.moveaxis(label, 2, 0)
         data = tf.image.resize(data, [SAG, COR])
-        label = resize_label(label, [SAG, COR])
         data = np.moveaxis(data, 0, 2)
-        label = np.moveaxis(label, 0, 2)
         data = tf.image.resize(data, [SAG, AX])
-        label = resize_label(label, [SAG, AX])
-        label = tf.squeeze(label, axis=-1)
+
+        has_label = os.path.exists(f'{chaos_folder}/{folder}/ground.nii')
+        label, label_raw = None, None
+        if has_label:
+
+            label_raw = nib.load(f'{chaos_folder}/{folder}/ground.nii')
+            label = label_raw.get_fdata()
+            label = tf.expand_dims(label, axis=-1)
+
+            # RESIZE LABEL TO (144, 288, 288)
+            label = np.moveaxis(label, 2, 0)
+            label = resize_label(label, [SAG, COR])
+            label = np.moveaxis(label, 0, 2)
+            label = resize_label(label, [SAG, AX])
+            label = tf.squeeze(label, axis=-1)
 
         # Axial view
         axial_data = np.moveaxis(data, 2, 0)
         if save_data:
             misc.save_nii(axial_data, data_path + f'/axial/{folder}/{folder}-data', header=in_phase_raw.header)
 
-        axial_label = np.moveaxis(label, 2, 0)
-        if save_data: misc.save_nii(axial_label, data_path + f'/axial/{folder}/{folder}-label', header=label_raw.header)
-        axial_label = axial_label.astype(np.float32) / 63.0
+        if has_label:
+            axial_label = np.moveaxis(label, 2, 0)
+            # TODO don't save labels with this header as the floats are saved as whole numbers?
+            if save_data: misc.save_nii(axial_label, data_path + f'/axial/{folder}/{folder}-label', header=label_raw.header)
+            axial_label = axial_label.astype(np.float32) / 63.0
 
-        print(f'Axial: data shape: {axial_data.shape} ~ label shape: {axial_label.shape}')
-        if save_record:
-            sample = [{'X': axial_data[i], 'Y': axial_label[i]} for i in range(len(axial_data))]
-            tfrm.save_record(tfrecord_path + f'/axial/{data_purpose}/{folder}', sample)
+            print(f'Axial: data shape: {axial_data.shape} ~ label shape: {axial_label.shape}')
+            if save_record:
+                sample = [{'X': axial_data[i], 'Y': axial_label[i]} for i in range(len(axial_data))]
+                tfrm.save_record(tfrecord_path + f'/axial/{data_purpose}/{folder}', sample)
 
         # Sagittal view
         sagittal_data = np.moveaxis(data, 1, 0)
         if save_data: misc.save_nii(sagittal_data, data_path + f'/sagittal/{folder}/{folder}-data', header=in_phase_raw.header)
 
-        sagittal_label = np.moveaxis(label, 1, 0)
-        if save_data: misc.save_nii(sagittal_label, data_path + f'/sagittal/{folder}/{folder}-label', header=label_raw.header)
-        sagittal_label = sagittal_label.astype(np.float32) / 63.0
-        print(f'Sagittal: data shape: {sagittal_data.shape} ~ label shape: {sagittal_label.shape}')
-        if save_record:
-            sample = [{'X': sagittal_data[i], 'Y': sagittal_label[i]} for i in range(len(sagittal_data))]
-            tfrm.save_record(tfrecord_path + f'/sagittal/{data_purpose}/{folder}', sample)
+        if has_label:
+            sagittal_label = np.moveaxis(label, 1, 0)
+            if save_data: misc.save_nii(sagittal_label, data_path + f'/sagittal/{folder}/{folder}-label', header=label_raw.header)
+            sagittal_label = sagittal_label.astype(np.float32) / 63.0
+            print(f'Sagittal: data shape: {sagittal_data.shape} ~ label shape: {sagittal_label.shape}')
+            if save_record:
+                sample = [{'X': sagittal_data[i], 'Y': sagittal_label[i]} for i in range(len(sagittal_data))]
+                tfrm.save_record(tfrecord_path + f'/sagittal/{data_purpose}/{folder}', sample)
 
         # Coronal view
         coronal_data = data
         if save_data: misc.save_nii(coronal_data, data_path + f'/coronal/{folder}/{folder}-data', header=in_phase_raw.header)
 
-        coronal_label = label.numpy()
-        if save_data: misc.save_nii(coronal_label, data_path + f'/coronal/{folder}/{folder}-label', header=label_raw.header)
-        coronal_label = coronal_label.astype(np.float32) / 63.0
-        print(f'Coronal: data shape: {coronal_data.shape} ~ label shape: {coronal_label.shape}')
-        if save_record:
-            sample = [{'X': coronal_data[i], 'Y': coronal_label[i]} for i in range(len(coronal_data))]
-            tfrm.save_record(tfrecord_path + f'/coronal/{data_purpose}/{folder}', sample)
+        if has_label:
+            coronal_label = label.numpy()
+            if save_data: misc.save_nii(coronal_label, data_path + f'/coronal/{folder}/{folder}-label', header=label_raw.header)
+            coronal_label = coronal_label.astype(np.float32) / 63.0
+            print(f'Coronal: data shape: {coronal_data.shape} ~ label shape: {coronal_label.shape}')
+            if save_record:
+                sample = [{'X': coronal_data[i], 'Y': coronal_label[i]} for i in range(len(coronal_data))]
+                tfrm.save_record(tfrecord_path + f'/coronal/{data_purpose}/{folder}', sample)
 
         print('\n')
 
@@ -156,11 +167,13 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
         #data = nib.load(f'{data_path}/{folder}/{folder}-3pred.nii').get_fdata()
         #label = nib.load(f'{data_path}/{folder}/{folder}-label.nii').get_fdata()
 
+        label = nib.load(f'{data_path}/coronal/{folder}/{folder}-label.nii').get_fdata()
+        label = label.astype(np.float32) / 63.0
+
         data = {view: nib.load(f'{data_path}/{view}/{folder}/{folder}-{prefixes[view]}-pred.nii').get_fdata() for view in VIEWS}
         data['axial'] = np.moveaxis(data['axial'], 0, 2)
         data['sagittal'] = np.moveaxis(data['sagittal'], 0, 1)
-        label = nib.load(f'{data_path}/coronal/{folder}/{folder}-label.nii').get_fdata()
-        label = label.astype(np.float32) / 63.0
+
 
         #data = tf.ones((100, 100, 100, 10))
         #label = tf.ones((100, 100, 100))
@@ -179,6 +192,10 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
 
             patch_data = {view: data[view][x_start:x_finish, y_start:y_finish, z_start:z_finish, :] for view in VIEWS}
             patch_label = label[x_start:x_finish, y_start:y_finish, z_start:z_finish]
+
+            # TODO temp fix labels
+            patch_label = np.ceil(patch_label)
+
             patch_data = np.concatenate([patch_data['axial'], patch_data['sagittal'], patch_data['coronal']], axis=-1).astype(np.float32)
             sample.append({'X' : patch_data, 'Y': patch_label})
 
@@ -188,9 +205,10 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
 
 
 if __name__ == '__main__':
-    #create_cdf_tfrecords('3x_normal')
+    #create_cdf_tfrecords('test', save_record=False)
+    #exit(4)
     create_van_tfrecords('3x_normal', {
         'axial': 'BDICE_2',
         'sagittal': 'BDICE_2',
         'coronal': 'BDICE_2'
-    }, patches_per_sample=50, patch_size=(140, 140, 40))
+    }, patches_per_sample=20, patch_size=(140, 140, 40))

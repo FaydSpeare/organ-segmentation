@@ -55,7 +55,7 @@ def batch_dice_score_from_logits(y_true, y_pred, from_logits=False):
     target_axes = list(range(len(probs.shape)))[:-1]
     intersect = tf.reduce_sum(probs * y_true, axis=target_axes)
     denominator = tf.reduce_sum(probs, axis=target_axes) + tf.reduce_sum(y_true, axis=target_axes)
-    dice_score = 2. * intersect / (denominator + 1e-6)
+    dice_score = 2. * intersect / tf.maximum(denominator, 1e-6)
     return dice_score
 
 
