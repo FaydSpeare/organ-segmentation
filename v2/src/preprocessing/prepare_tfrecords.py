@@ -7,7 +7,6 @@ import random
 
 from common.tfrecords import TFRecordsManager
 from common import misc
-from preprocessing import combine_preds
 
 
 
@@ -59,14 +58,14 @@ def create_cdf_tfrecords(records_name, save_data=True, save_record=True):
                 misc.mkdir(f'{data_path}/{view}/{folder}')
 
         # Load data and labels
-        in_phase_raw = nib.load(f'{chaos_folder}/{folder}/InPhase.nii')
+        in_phase_raw = nib.load(f'{chaos_folder}/{folder}/InPhase_HM.nii')
         in_phase = in_phase_raw.get_fdata()
-        out_phase = nib.load(f'{chaos_folder}/{folder}/OutPhase.nii').get_fdata()
-        combined = np.stack([in_phase, out_phase], axis=-1)
+        out_phase = nib.load(f'{chaos_folder}/{folder}/OutPhase_HM.nii').get_fdata()
+        data = np.stack([in_phase, out_phase], axis=-1)
 
         # Normalize data
-        mean, std = np.mean(combined, axis=(0, 1, 2)), np.std(combined, axis=(0, 1, 2))
-        data = (combined -  mean) / (std * 3)
+        #mean, std = np.mean(combined, axis=(0, 1, 2)), np.std(combined, axis=(0, 1, 2))
+        #data = (combined -  mean) / (std * 3)
 
         # RESIZE DATA TO (144, 288, 288)
         AX, SAG, COR = 80, 288, 288
@@ -205,10 +204,10 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
 
 
 if __name__ == '__main__':
-    #create_cdf_tfrecords('test', save_record=False)
-    #exit(4)
-    create_van_tfrecords('3x_normal', {
-        'axial': 'BDICE_2',
-        'sagittal': 'BDICE_2',
-        'coronal': 'BDICE_2'
-    }, patches_per_sample=20, patch_size=(140, 140, 40))
+    create_cdf_tfrecords('histmatch', save_record=True)
+
+    # create_van_tfrecords('3x_normal', {
+    #     'axial': 'BDICE_2',
+    #     'sagittal': 'BDICE_2',
+    #     'coronal': 'BDICE_2'
+    # }, patches_per_sample=20, patch_size=(140, 140, 40))
