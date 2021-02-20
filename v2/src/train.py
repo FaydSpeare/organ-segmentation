@@ -9,17 +9,17 @@ def main():
 
     # Parameters for training
     parameters = p.default_parameters()
-    parameters[p.PREFIX]       = 'HM_50'
-    parameters[p.TFRECORDS]    = 'histmatch/combined'
-    parameters[p.LOSS_FN]      =  Loss.BDICE
+    parameters[p.PREFIX]       = 'HM_50_COMBOL'
+    parameters[p.TFRECORDS]    = 'histmatch/axial'
+    parameters[p.LOSS_FN]      =  Loss.CCE_BDICE
     parameters[p.LR]           =  0.001
     parameters[p.NUM_CLASSES]  =  5
     parameters[p.OPTIMISER]    =  Optimiser.ADAM
-    parameters[p.TRAIN_BATCH]  =  10
-    parameters[p.VAL_BATCH]    =  20
+    parameters[p.TRAIN_BATCH]  =  27
+    parameters[p.VAL_BATCH]    =  40
     parameters[p.PATIENCE]     =  20
-    # parameters[p.NETWORK]      =  CDFNet
-    parameters[p.NETWORK]      =  ViewAggregation
+    parameters[p.NETWORK]      =  CDFNet
+    # parameters[p.NETWORK]      =  ViewAggregation
     p.validate(parameters)
 
     # Create folder for the new model
