@@ -15,9 +15,9 @@ def main():
     parameters[p.LR]           =  0.001
     parameters[p.NUM_CLASSES]  =  5
     parameters[p.OPTIMISER]    =  Optimiser.ADAM
-    parameters[p.TRAIN_BATCH]  =  27
-    parameters[p.VAL_BATCH]    =  40
-    parameters[p.PATIENCE]     =  20
+    parameters[p.TRAIN_BATCH]  =  10
+    parameters[p.VAL_BATCH]    =  27
+    parameters[p.PATIENCE]     =  50
     parameters[p.NETWORK]      =  CDFNet
     # parameters[p.NETWORK]      =  ViewAggregation
     p.validate(parameters)
