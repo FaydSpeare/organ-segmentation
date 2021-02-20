@@ -18,7 +18,7 @@ def create_cdf_tfrecords(records_name, save_data=True, save_record=True):
 
     # Create new folders for data
     chaos_folder = misc.get_chaos_path()
-    #chaos_folder = misc.get_base_path() + '/../Unlabelled'
+    # chaos_folder = misc.get_base_path() + '/../Unlabelled'
     tfrecord_path = misc.get_tfrecords_path() + f'/{records_name}'
     data_path = misc.get_data_path() + f'/{records_name}'
     if save_record: misc.mkdir(tfrecord_path)
@@ -204,10 +204,10 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
 
 
 if __name__ == '__main__':
-    # create_cdf_tfrecords('histmatch', save_record=True)
+    create_cdf_tfrecords('unlabelled_histmatch', save_record=False)
 
-    create_van_tfrecords('histmatch', {
-        'axial': 'HM_50',
-        'sagittal': 'HM_50',
-        'coronal': 'HM_50'
-    }, patches_per_sample=25, patch_size=(140, 140, 40))
+    # create_van_tfrecords('histmatch', {
+    #     'axial': 'HM_50',
+    #     'sagittal': 'HM_50',
+    #     'coronal': 'HM_50'
+    # }, patches_per_sample=25, patch_size=(140, 140, 40))

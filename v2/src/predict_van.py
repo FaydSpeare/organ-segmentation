@@ -27,8 +27,6 @@ def predict(model_folder, data_folder, prefixes):
 
     for idx, folder in enumerate(os.listdir(f'{data_path}/axial')):
         print(f'Predicting for folder: [{folder}]', flush=True)
-        if folder != '10':
-            continue
 
         data = {view: nib.load(f'{data_path}/{view}/{folder}/{folder}-{prefixes[view]}-pred.nii').get_fdata() for view in VIEWS}
         data['axial'] = np.moveaxis(data['axial'], 0, 2)
@@ -78,8 +76,8 @@ def predict(model_folder, data_folder, prefixes):
 
 
 if __name__ == '__main__':
-    predict('(B-VAN_3)-(3x_normal_combined)-(Feb-10-135847)', '3x_normal', {
-        'axial': 'BDICE_2',
-        'sagittal': 'BDICE_2',
-        'coronal': 'BDICE_2'
+    predict('(HM_50)-(histmatch_combined)-(Feb-20-132001)', 'unlabelled_histmatch', {
+        'axial': 'HM_50',
+        'sagittal': 'HM_50',
+        'coronal': 'HM_50'
     })

@@ -46,6 +46,6 @@ def predict(model_folder, data_folder, prefix='', batch_size=10):
 
 
 if __name__ == '__main__':
-    #predict("(BDICE_2)-(3x_normal_axial)-(Feb-10-012355)", 'unlabelled_2/axial', prefix='')
-    predict("(BDICE_2)-(3x_normal_coronal)-(Feb-10-012444)", 'unlabelled_2/coronal', prefix='')
-    predict("(BDICE_2)-(3x_normal_sagittal)-(Feb-10-012517)", 'unlabelled_2/sagittal', prefix='')
+    predict("(HM_50)-(histmatch_axial)-(Feb-18-204405)", 'unlabelled_histmatch/axial', prefix='HM_50')
+    predict("(HM_50)-(histmatch_coronal)-(Feb-18-204251)", 'unlabelled_histmatch/coronal', prefix='HM_50')
+    predict("(HM_50)-(histmatch_sagittal)-(Feb-18-204324)", 'unlabelled_histmatch/sagittal', prefix='HM_50')
