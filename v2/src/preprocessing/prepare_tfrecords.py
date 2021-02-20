@@ -204,10 +204,10 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
 
 
 if __name__ == '__main__':
-    create_cdf_tfrecords('histmatch', save_record=True)
+    # create_cdf_tfrecords('histmatch', save_record=True)
 
-    # create_van_tfrecords('3x_normal', {
-    #     'axial': 'BDICE_2',
-    #     'sagittal': 'BDICE_2',
-    #     'coronal': 'BDICE_2'
-    # }, patches_per_sample=20, patch_size=(140, 140, 40))
+    create_van_tfrecords('3x_normal', {
+        'axial': 'HM_50',
+        'sagittal': 'HM_50',
+        'coronal': 'HM_50'
+    }, patches_per_sample=25, patch_size=(140, 140, 40))
