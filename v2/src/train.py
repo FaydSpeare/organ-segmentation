@@ -9,8 +9,8 @@ def main():
 
     # Parameters for training
     parameters = p.default_parameters()
-    parameters[p.PREFIX]       = 'hm_small_50'
-    parameters[p.TFRECORDS]    = 'hm_small/axial'
+    parameters[p.PREFIX]       = 'hm_large_50'
+    parameters[p.TFRECORDS]    = 'hm_large/axial'
     parameters[p.LOSS_FN]      =  Loss.BDICE
     parameters[p.LR]           =  0.001
     parameters[p.NUM_CLASSES]  =  5

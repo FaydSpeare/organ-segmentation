@@ -68,7 +68,7 @@ def create_cdf_tfrecords(records_name, save_data=True, save_record=True):
         #data = (combined -  mean) / (std * 3)
 
         # RESIZE DATA TO (144, 288, 288)
-        AX, SAG, COR = 32, 288, 288
+        AX, SAG, COR = 160, 288, 288
         data = np.moveaxis(data, 2, 0)
         data = tf.image.resize(data, [SAG, COR])
         data = np.moveaxis(data, 0, 2)
@@ -204,7 +204,7 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
 
 
 if __name__ == '__main__':
-    create_cdf_tfrecords('hm_small', save_record=True)
+    create_cdf_tfrecords('hm_large', save_record=True)
 
     # create_van_tfrecords('histmatch', {
     #     'axial': 'HM_50',
