@@ -9,9 +9,9 @@ def main():
 
     # Parameters for training
     parameters = p.default_parameters()
-    parameters[p.PREFIX]       = 'HM_50_COMBOL'
-    parameters[p.TFRECORDS]    = 'histmatch/axial'
-    parameters[p.LOSS_FN]      =  Loss.CCE_BDICE
+    parameters[p.PREFIX]       = 'hm_small_50'
+    parameters[p.TFRECORDS]    = 'hm_small/axial'
+    parameters[p.LOSS_FN]      =  Loss.BDICE
     parameters[p.LR]           =  0.001
     parameters[p.NUM_CLASSES]  =  5
     parameters[p.OPTIMISER]    =  Optimiser.ADAM
