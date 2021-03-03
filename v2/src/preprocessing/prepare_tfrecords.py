@@ -14,7 +14,7 @@ def resize_label(label, size, alpha=63.0):
     return tf.round(tf.image.resize(label, size, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR) / alpha) * alpha
 
 
-def create_cdf_tfrecords(records_name, save_data=True, save_record=True):
+def create_cdf_tfrecords(records_name, save_data=True, save_record=True, data_augmentation=True):
 
     # Create new folders for data
     chaos_folder = misc.get_chaos_path()
@@ -50,7 +50,7 @@ def create_cdf_tfrecords(records_name, save_data=True, save_record=True):
 
     # Create records
     for idx, folder in enumerate(os.listdir(chaos_folder)):
-        print(f'Creating TFRecord for folder: [{folder}]')
+        print(f'Creating TFRecord for folder: [{folder}]', flush=True)
         data_purpose = 'train' if idx <= split else 'val'
 
         if save_data:
@@ -68,7 +68,7 @@ def create_cdf_tfrecords(records_name, save_data=True, save_record=True):
         #data = (combined -  mean) / (std * 3)
 
         # RESIZE DATA TO (144, 288, 288)
-        AX, SAG, COR = 160, 288, 288
+        AX, SAG, COR = 80, 288, 288
         data = np.moveaxis(data, 2, 0)
         data = tf.image.resize(data, [SAG, COR])
         data = np.moveaxis(data, 0, 2)
@@ -100,9 +100,17 @@ def create_cdf_tfrecords(records_name, save_data=True, save_record=True):
             if save_data: misc.save_nii(axial_label, data_path + f'/axial/{folder}/{folder}-label', header=label_raw.header)
             axial_label = axial_label.astype(np.float32) / 63.0
 
-            print(f'Axial: data shape: {axial_data.shape} ~ label shape: {axial_label.shape}')
+            print(f'Axial: data shape: {axial_data.shape} ~ label shape: {axial_label.shape}', flush=True)
             if save_record:
-                sample = [{'X': axial_data[i], 'Y': axial_label[i]} for i in range(len(axial_data))]
+                # sample = [{'X': axial_data[i], 'Y': axial_label[i]} for i in range(len(axial_data))]
+
+                sample = list()
+                for i in range(len(axial_data)):
+                    sample.append({'X': axial_data[i], 'Y': axial_label[i]})
+                    if data_augmentation:
+                        sample.append({'X': np.fliplr(axial_data[i]), 'Y': np.fliplr(axial_label[i])})
+                        sample.append({'X': np.flipud(axial_data[i]), 'Y': np.flipud(axial_label[i])})
+
                 tfrm.save_record(tfrecord_path + f'/axial/{data_purpose}/{folder}', sample)
 
         # Sagittal view
@@ -113,9 +121,18 @@ def create_cdf_tfrecords(records_name, save_data=True, save_record=True):
             sagittal_label = np.moveaxis(label, 1, 0)
             if save_data: misc.save_nii(sagittal_label, data_path + f'/sagittal/{folder}/{folder}-label', header=label_raw.header)
             sagittal_label = sagittal_label.astype(np.float32) / 63.0
-            print(f'Sagittal: data shape: {sagittal_data.shape} ~ label shape: {sagittal_label.shape}')
+            print(f'Sagittal: data shape: {sagittal_data.shape} ~ label shape: {sagittal_label.shape}', flush=True)
             if save_record:
-                sample = [{'X': sagittal_data[i], 'Y': sagittal_label[i]} for i in range(len(sagittal_data))]
+
+                # sample = [{'X': sagittal_data[i], 'Y': sagittal_label[i]} for i in range(len(sagittal_data))]
+
+                sample = list()
+                for i in range(len(sagittal_data)):
+                    sample.append({'X': sagittal_data[i], 'Y': sagittal_label[i]})
+                    if data_augmentation:
+                        sample.append({'X': np.fliplr(sagittal_data[i]), 'Y': np.fliplr(sagittal_label[i])})
+                        sample.append({'X': np.flipud(sagittal_data[i]), 'Y': np.flipud(sagittal_label[i])})
+
                 tfrm.save_record(tfrecord_path + f'/sagittal/{data_purpose}/{folder}', sample)
 
         # Coronal view
@@ -126,12 +143,20 @@ def create_cdf_tfrecords(records_name, save_data=True, save_record=True):
             coronal_label = label.numpy()
             if save_data: misc.save_nii(coronal_label, data_path + f'/coronal/{folder}/{folder}-label', header=label_raw.header)
             coronal_label = coronal_label.astype(np.float32) / 63.0
-            print(f'Coronal: data shape: {coronal_data.shape} ~ label shape: {coronal_label.shape}')
+            print(f'Coronal: data shape: {coronal_data.shape} ~ label shape: {coronal_label.shape}', flush=True)
             if save_record:
-                sample = [{'X': coronal_data[i], 'Y': coronal_label[i]} for i in range(len(coronal_data))]
+                # sample = [{'X': coronal_data[i], 'Y': coronal_label[i]} for i in range(len(coronal_data))]
+
+                sample = list()
+                for i in range(len(coronal_data)):
+                    sample.append({'X': coronal_data[i], 'Y': coronal_label[i]})
+                    if data_augmentation:
+                        sample.append({'X': np.fliplr(coronal_data[i]), 'Y': np.fliplr(coronal_label[i])})
+                        sample.append({'X': np.flipud(coronal_data[i]), 'Y': np.flipud(coronal_label[i])})
+
                 tfrm.save_record(tfrecord_path + f'/coronal/{data_purpose}/{folder}', sample)
 
-        print('\n')
+        print('\n', flush=True)
 
 
 VIEWS = ['axial', 'sagittal', 'coronal']
@@ -204,7 +229,7 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
 
 
 if __name__ == '__main__':
-    create_cdf_tfrecords('hm_large', save_record=True)
+    create_cdf_tfrecords('hm_aug', save_record=True, data_augmentation=True)
 
     # create_van_tfrecords('histmatch', {
     #     'axial': 'HM_50',
