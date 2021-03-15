@@ -75,7 +75,7 @@ class Solver:
 
     # @tf.function
     def step(self, x, y, training=True):
-        print('step')
+        # print('step')
         if training:
             with tf.GradientTape(persistent=True) as tape:
                 [base_d_out, im_d_out, label_d_out], [im_e_out, label_e_out] = self.network(x, training=True)
@@ -109,7 +109,7 @@ class Solver:
             self.optimiser.apply_gradients(zip(gradients, imitation_output_trainables))
 
         else:
-            [base_d_out, im_d_out, label_d_out], [im_e_out, label_e_out] = self.network([x, y], training=False)
+            [base_d_out, im_d_out, label_d_out], [im_e_out, label_e_out] = self.network(x, training=False)
 
             base_output_loss = self.loss_fn(y, base_d_out)
             imitation_output_loss = self.loss_fn(y, im_d_out)
