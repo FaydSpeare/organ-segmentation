@@ -57,9 +57,10 @@ class Solver:
         assert mode in self.params[p.MODES]
         is_training = mode == 'train'
         for batch in dataset:
-            y = tf.keras.utils.to_categorical(tf.cast(batch['Y'], tf.int32), num_classes=self.params[p.NUM_CLASSES])
-            logits, loss = self.step(batch['X'], y, training=is_training)
-            dice_scores = {name : batch_dice_score_from_logits(y, name) for name in logits}
+            y_label = tf.keras.utils.to_categorical(tf.cast(batch['Y'], tf.int32), num_classes=self.params[p.NUM_CLASSES])
+            y_input = tf.keras.utils.to_categorical(tf.cast(batch['Y'], tf.float32), num_classes=self.params[p.NUM_CLASSES])
+            logits, loss = self.step([batch['X'], y_input], y_label, training=is_training)
+            dice_scores = {name : batch_dice_score_from_logits(y_label, name) for name in logits}
             self.update_metrics(loss.update(dice_scores))
 
         if mode == 'val': self.save_model()
@@ -76,7 +77,7 @@ class Solver:
 
         if training:
             with tf.GradientTape() as tape:
-                [base_d_out, im_d_out, label_d_out], [im_e_out, label_e_out] = self.network([x, y], training=True)
+                [base_d_out, im_d_out, label_d_out], [im_e_out, label_e_out] = self.network(x, training=True)
 
                 base_output_loss = self.loss_fn(y, base_d_out)
                 imitation_output_loss = self.loss_fn(y, im_d_out)
