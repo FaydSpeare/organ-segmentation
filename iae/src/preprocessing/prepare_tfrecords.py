@@ -229,7 +229,7 @@ def create_van_tfrecords(data_folder, prefixes, patches_per_sample=50, patch_siz
 
 
 if __name__ == '__main__':
-    create_cdf_tfrecords('hm_aug', save_record=True, data_augmentation=False)
+    create_cdf_tfrecords('hm', save_record=True, data_augmentation=False)
 
     # create_van_tfrecords('histmatch', {
     #     'axial': 'HM_50',

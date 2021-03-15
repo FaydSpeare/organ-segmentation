@@ -59,9 +59,10 @@ class Solver:
         for batch in dataset:
             y_label = tf.keras.utils.to_categorical(tf.cast(batch['Y'], tf.int32), num_classes=self.params[p.NUM_CLASSES])
             y_input = tf.keras.utils.to_categorical(tf.cast(batch['Y'], tf.float32), num_classes=self.params[p.NUM_CLASSES])
-            logits, loss = self.step([batch['X'], y_input], y_label, training=is_training)
-            dice_scores = {name : batch_dice_score_from_logits(y_label, name) for name in logits}
-            self.update_metrics(loss.update(dice_scores))
+            loss, logits = self.step([batch['X'], y_input], y_label, training=is_training)
+            dice_scores = {name.split('_')[0] + '_dice_score' : batch_dice_score_from_logits(y_label, logits[name]) for name in logits}
+            loss.update(dice_scores)
+            self.update_metrics(loss)
 
         if mode == 'val': self.save_model()
         if mode == 'train' : self.epoch += 1
@@ -74,31 +75,35 @@ class Solver:
 
     # @tf.function
     def step(self, x, y, training=True):
-
+        print('step')
         if training:
-            with tf.GradientTape() as tape:
+            with tf.GradientTape(persistent=True) as tape:
                 [base_d_out, im_d_out, label_d_out], [im_e_out, label_e_out] = self.network(x, training=True)
 
                 base_output_loss = self.loss_fn(y, base_d_out)
                 imitation_output_loss = self.loss_fn(y, im_d_out)
                 label_output_loss = self.loss_fn(y, label_d_out)
-                imitation_loss = tf.math.reduce_euclidean_norm(im_e_out, label_e_out)
+                imitation_loss = tf.norm(im_e_out - label_e_out, ord='euclidean')
 
             # Imitation Loss
+            #print('im')
             gradients = tape.gradient(imitation_loss, self.network.imitating_encoder.trainable_variables)
             self.optimiser.apply_gradients(zip(gradients, self.network.imitating_encoder.trainable_variables))
 
             # Base Output Loss
+            #print('base')
             base_output_trainables = self.network.base_encoder.trainable_variables + self.network.base_decoder.trainable_variables
             gradients = tape.gradient(base_output_loss, base_output_trainables)
             self.optimiser.apply_gradients(zip(gradients, base_output_trainables))
 
             # Label Output Loss
+            #print('label')
             label_output_trainables = self.network.label_encoder.trainable_variables + self.network.label_decoder.trainable_variables
             gradients = tape.gradient(label_output_loss, label_output_trainables)
             self.optimiser.apply_gradients(zip(gradients, label_output_trainables))
 
             # Imitation Output Loss
+            #print('im2')
             imitation_output_trainables = self.network.imitating_encoder.trainable_variables + self.network.label_decoder.trainable_variables
             gradients = tape.gradient(imitation_output_loss, imitation_output_trainables)
             self.optimiser.apply_gradients(zip(gradients, imitation_output_trainables))
