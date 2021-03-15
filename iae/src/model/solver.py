@@ -85,28 +85,28 @@ class Solver:
                 label_output_loss = self.loss_fn(y, label_d_out)
                 imitation_loss = tf.norm(im_e_out - label_e_out, ord='euclidean')
 
-            # Imitation Loss
-            #print('im')
-            gradients = tape.gradient(imitation_loss, self.network.imitating_encoder.trainable_variables)
-            self.optimiser.apply_gradients(zip(gradients, self.network.imitating_encoder.trainable_variables))
-
-            # Base Output Loss
-            #print('base')
-            base_output_trainables = self.network.base_encoder.trainable_variables + self.network.base_decoder.trainable_variables
-            gradients = tape.gradient(base_output_loss, base_output_trainables)
-            self.optimiser.apply_gradients(zip(gradients, base_output_trainables))
-
             # Label Output Loss
-            #print('label')
+            print('label')
             label_output_trainables = self.network.label_encoder.trainable_variables + self.network.label_decoder.trainable_variables
             gradients = tape.gradient(label_output_loss, label_output_trainables)
             self.optimiser.apply_gradients(zip(gradients, label_output_trainables))
 
             # Imitation Output Loss
-            #print('im2')
+            print('im2')
             imitation_output_trainables = self.network.imitating_encoder.trainable_variables + self.network.label_decoder.trainable_variables
             gradients = tape.gradient(imitation_output_loss, imitation_output_trainables)
             self.optimiser.apply_gradients(zip(gradients, imitation_output_trainables))
+
+            # Imitation Loss
+            print('im')
+            gradients = tape.gradient(imitation_loss, self.network.imitating_encoder.trainable_variables)
+            self.optimiser.apply_gradients(zip(gradients, self.network.imitating_encoder.trainable_variables))
+
+            # Base Output Loss
+            print('base')
+            base_output_trainables = self.network.base_encoder.trainable_variables + self.network.base_decoder.trainable_variables
+            gradients = tape.gradient(base_output_loss, base_output_trainables)
+            self.optimiser.apply_gradients(zip(gradients, base_output_trainables))
 
         else:
             [base_d_out, im_d_out, label_d_out], [im_e_out, label_e_out] = self.network(x, training=False)

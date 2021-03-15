@@ -33,7 +33,7 @@ class Network(tf.keras.models.Model):
         im_de_out = self.label_decoder([im_en_out] + skips)
         la_de_out = self.label_decoder([la_en_out] + skips)
 
-        return [base_de_out, la_de_out, im_de_out], [la_en_out, im_en_out]
+        return [base_de_out, im_de_out, la_de_out], [im_en_out, la_en_out]
 
 
     def get_config(self):
