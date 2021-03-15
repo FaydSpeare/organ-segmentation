@@ -43,7 +43,6 @@ class CDFNet(tf.keras.models.Model):
         self.final_conv = Conv2D(num_classes, kernel_size=1)
         self.softmax = Softmax()
 
-        pass
 
     def call(self, input_tensor, training=None, mask=None):
 
