@@ -41,6 +41,14 @@ def main():
         best_val_loss = solver.best_val_loss
         val_loss = epoch_metrics['val']['imitation_output_loss']
         print(f'ValLoss:[{val_loss}] BestValLoss:[{best_val_loss}] EST:[{solver.early_stopping_tick}]', flush=True)
+
+        for name in ['base', 'imitation', 'label']:
+            amount = epoch_metrics["val"][f'{name}_output_loss']
+            print(f'{name}_output_loss:', amount)
+
+        print(f'imitation_loss:', epoch_metrics["val"]['imitation_loss'])
+        print()
+
         if solver.early_stopping_tick > parameters[p.PATIENCE]:
             break
 
