@@ -85,6 +85,20 @@ class Solver:
                 label_output_loss = self.loss_fn(y, label_d_out)
                 imitation_loss = tf.norm(im_e_out - label_e_out, ord='euclidean')# / tf.size(im_e_out, out_type=tf.float32)
 
+            loss = {
+                # Loss
+                'base_output_loss': base_output_loss,
+                'imitation_output_loss': imitation_output_loss,
+                'label_output_loss': label_output_loss,
+                'imitation_loss': imitation_loss
+            }
+
+            logits = {
+                'base_output_logits': base_d_out,
+                'imitation_output_logits': im_d_out,
+                'label_output_logits': label_d_out
+            }
+
             # Label Output Loss
             # print('label')
             label_output_trainables = self.network.label_encoder.trainable_variables + self.network.label_decoder.trainable_variables
@@ -109,26 +123,26 @@ class Solver:
             self.optimiser.apply_gradients(zip(gradients, base_output_trainables))
 
         else:
-            [base_d_out, im_d_out, label_d_out], [im_e_out, label_e_out] = self.network(x, training=False)
+            [base_d_out, im_d_out, label_d_out], [im_e_out, label_e_out] = self.network(x, training=True)
 
             base_output_loss = self.loss_fn(y, base_d_out)
             imitation_output_loss = self.loss_fn(y, im_d_out)
             label_output_loss = self.loss_fn(y, label_d_out)
             imitation_loss = tf.norm(im_e_out - label_e_out, ord='euclidean')# / tf.size(im_e_out, out_type=tf.float32)
 
-        loss = {
-            # Loss
-            'base_output_loss' : base_output_loss,
-            'imitation_output_loss' : imitation_output_loss,
-            'label_output_loss' : label_output_loss,
-            'imitation_loss' : imitation_loss
-        }
+            loss = {
+                # Loss
+                'base_output_loss' : base_output_loss,
+                'imitation_output_loss' : imitation_output_loss,
+                'label_output_loss' : label_output_loss,
+                'imitation_loss' : imitation_loss
+            }
 
-        logits = {
-            'base_output_logits' : base_d_out,
-            'imitation_output_logits' : im_d_out,
-            'label_output_logits' : label_d_out
-        }
+            logits = {
+                'base_output_logits' : base_d_out,
+                'imitation_output_logits' : im_d_out,
+                'label_output_logits' : label_d_out
+            }
 
         return loss, logits
 
