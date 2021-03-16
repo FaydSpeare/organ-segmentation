@@ -55,7 +55,7 @@ class Solver:
 
     def run_epoch(self, dataset, mode):
         assert mode in self.params[p.MODES]
-        is_training = mode == 'train'
+        is_training = False#mode == 'train'
         for batch in dataset:
             y_label = tf.keras.utils.to_categorical(tf.cast(batch['Y'], tf.int32), num_classes=self.params[p.NUM_CLASSES])
             y_input = tf.keras.utils.to_categorical(tf.cast(batch['Y'], tf.float32), num_classes=self.params[p.NUM_CLASSES])
