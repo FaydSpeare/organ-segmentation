@@ -24,14 +24,14 @@ class Network(tf.keras.models.Model):
         x = inputs[0]
         y = inputs[1]
 
-        base_en_out, skips = self.base_encoder(x)
-        base_de_out = self.base_decoder([base_en_out] + skips)
+        base_en_out, skips = self.base_encoder(x, training=training)
+        base_de_out = self.base_decoder([base_en_out] + skips, training=training)
 
-        im_en_out, _ = self.imitating_encoder(x)
-        la_en_out, _ = self.label_encoder(y)
+        im_en_out, _ = self.imitating_encoder(x, training=training)
+        la_en_out, _ = self.label_encoder(y, training=training)
 
-        im_de_out = self.label_decoder([im_en_out] + skips)
-        la_de_out = self.label_decoder([la_en_out] + skips)
+        im_de_out = self.label_decoder([im_en_out] + skips, training=training)
+        la_de_out = self.label_decoder([la_en_out] + skips, training=training)
 
         return [base_de_out, im_de_out, la_de_out], [im_en_out, la_en_out]
 
