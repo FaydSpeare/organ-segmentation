@@ -8,8 +8,8 @@ def main():
 
     # Parameters for training
     parameters = p.default_parameters()
-    parameters[p.PREFIX]       = 'imitation'
-    parameters[p.TFRECORDS]    = 'hm/test'
+    parameters[p.PREFIX]       = 'retrain_imitation'
+    parameters[p.TFRECORDS]    = 'hm/axial'
     parameters[p.LOSS_FN]      =  Loss.BDICE
     parameters[p.LR]           =  0.001
     parameters[p.NUM_CLASSES]  =  5
