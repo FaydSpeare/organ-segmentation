@@ -44,9 +44,9 @@ def main():
 
         for name in ['base', 'imitation', 'label']:
             amount = epoch_metrics["val"][f'{name}_output_loss']
-            print(f'{name}_output_loss:', amount)
+            print(f'{name}_output_loss:', amount, flush=True)
 
-        print(f'imitation_loss:', epoch_metrics["val"]['imitation_loss'])
+        print(f'imitation_loss:', epoch_metrics["val"]['imitation_loss'], flush=True)
         print()
 
         if solver.early_stopping_tick > parameters[p.PATIENCE]:
