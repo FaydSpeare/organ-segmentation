@@ -14,9 +14,9 @@ def main():
     parameters[p.LR]           =  0.001
     parameters[p.NUM_CLASSES]  =  5
     parameters[p.OPTIMISER]    =  Optimiser.ADAM
-    parameters[p.TRAIN_BATCH]  =  4
-    parameters[p.VAL_BATCH]    =  8
-    parameters[p.PATIENCE]     =  500
+    parameters[p.TRAIN_BATCH]  =  1
+    parameters[p.VAL_BATCH]    =  1
+    parameters[p.PATIENCE]     =  50
     parameters[p.NETWORK]      =  Network
     # parameters[p.NETWORK]      =  ViewAggregation
     p.validate(parameters)

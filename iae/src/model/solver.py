@@ -74,7 +74,7 @@ class Solver:
 
 
     # @tf.function
-    def step(self, x, y, training=True):
+    def step(self, x, y, training):
         # print('step')
         if training:
             with tf.GradientTape(persistent=True) as tape:

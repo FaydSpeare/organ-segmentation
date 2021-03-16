@@ -69,7 +69,7 @@ class TFRecordsManager:
             dataset = dataset.shuffle(100)
             #dataset = dataset.batch(batch_size) if "train" in data_purpose else dataset.batch(1)
             if "val" in data_purpose and val_batch_size is not None:
-                dataset = dataset.batch(val_batch_size, drop_remainder=True)
+                dataset = dataset.batch(val_batch_size)#, drop_remainder=True)
             else:
                 dataset = dataset.batch(batch_size)
             datasets[data_purpose] = dataset
