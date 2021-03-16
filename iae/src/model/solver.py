@@ -83,7 +83,7 @@ class Solver:
                 base_output_loss = self.loss_fn(y, base_d_out)
                 imitation_output_loss = self.loss_fn(y, im_d_out)
                 label_output_loss = self.loss_fn(y, label_d_out)
-                imitation_loss = tf.norm(im_e_out - label_e_out, ord='euclidean') #/ tf.size(im_e_out, out_type=tf.float32)
+                imitation_loss = tf.norm(im_e_out - label_e_out, ord='euclidean') / tf.size(im_e_out, out_type=tf.float32)
 
             # Label Output Loss
             # print('label')
@@ -114,7 +114,7 @@ class Solver:
             base_output_loss = self.loss_fn(y, base_d_out)
             imitation_output_loss = self.loss_fn(y, im_d_out)
             label_output_loss = self.loss_fn(y, label_d_out)
-            imitation_loss = tf.norm(im_e_out - label_e_out, ord='euclidean') #/ tf.size(im_e_out, out_type=tf.float32)
+            imitation_loss = tf.norm(im_e_out - label_e_out, ord='euclidean') / tf.size(im_e_out, out_type=tf.float32)
 
         loss = {
             # Loss
