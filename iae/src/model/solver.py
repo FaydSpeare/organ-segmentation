@@ -123,7 +123,7 @@ class Solver:
             self.optimiser.apply_gradients(zip(gradients, base_output_trainables))
 
         else:
-            [base_d_out, im_d_out, label_d_out], [im_e_out, label_e_out] = self.network(x, training=True)
+            [base_d_out, im_d_out, label_d_out], [im_e_out, label_e_out] = self.network(x, training=False)
 
             base_output_loss = self.loss_fn(y, base_d_out)
             imitation_output_loss = self.loss_fn(y, im_d_out)
