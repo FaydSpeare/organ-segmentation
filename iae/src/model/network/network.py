@@ -6,7 +6,7 @@ from model.network.cdfencoder import CDFEncoder
 
 class Network(tf.keras.models.Model):
 
-    def __init__(self, num_filters=64, num_classes=5):
+    def __init__(self, num_filters=1, num_classes=5):
         super(Network, self).__init__()
 
         self.base_encoder = CDFEncoder(num_filters=num_filters)

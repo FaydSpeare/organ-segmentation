@@ -9,14 +9,14 @@ def main():
     # Parameters for training
     parameters = p.default_parameters()
     parameters[p.PREFIX]       = 'imitation'
-    parameters[p.TFRECORDS]    = 'hm/axial'
+    parameters[p.TFRECORDS]    = 'hm/test'
     parameters[p.LOSS_FN]      =  Loss.BDICE
     parameters[p.LR]           =  0.001
     parameters[p.NUM_CLASSES]  =  5
     parameters[p.OPTIMISER]    =  Optimiser.ADAM
     parameters[p.TRAIN_BATCH]  =  4
     parameters[p.VAL_BATCH]    =  8
-    parameters[p.PATIENCE]     =  50
+    parameters[p.PATIENCE]     =  500
     parameters[p.NETWORK]      =  Network
     # parameters[p.NETWORK]      =  ViewAggregation
     p.validate(parameters)
